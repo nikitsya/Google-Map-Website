@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7ebbc1c7-39cb-4f8c-8a29-f9f60e696f58" name="Changes" comment="scaffold monorepo starter" />
+    <list default="true" id="7ebbc1c7-39cb-4f8c-8a29-f9f60e696f58" name="Changes" comment="minimal client-server skeleton">
+      <change beforePath="$PROJECT_DIR$/server/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/index.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -35,10 +37,13 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Node.js.server > index.js.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
     "last_opened_file_path": "/Users/nikitsya/projects/Google-Map-Website",
     "node.js.detected.package.eslint": "true",
@@ -71,11 +76,24 @@
       <updated>1774048133844</updated>
       <workItem from="1774048135149" duration="24000" />
       <workItem from="1774048841735" duration="739000" />
-      <workItem from="1774049632213" duration="300000" />
+      <workItem from="1774049632213" duration="1019000" />
     </task>
+    <task id="LOCAL-00001" summary="minimal client-server skeleton">
+      <option name="closed" value="true" />
+      <created>1774050145227</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1774050145227</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="minimal client-server skeleton" />
+    <option name="LAST_COMMIT_MESSAGE" value="minimal client-server skeleton" />
   </component>
 </project>
