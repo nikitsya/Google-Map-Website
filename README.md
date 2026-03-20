@@ -1,7 +1,5 @@
 # Google Map Website
 
-Minimal starter skeleton with:
-
 - `client`: plain HTML/CSS/JavaScript
 - `server`: Node.js + Express
 
@@ -9,15 +7,6 @@ Minimal starter skeleton with:
 
 - Node.js 20+
 - npm 10+
-
-## Quick Start
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
 
 ## Structure
 
