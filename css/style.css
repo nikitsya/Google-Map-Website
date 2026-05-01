@@ -28,6 +28,36 @@ section {
     margin-bottom: 1.5rem;
 }
 
+[data-layout="mapSection"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: 1rem;
+    align-items: start;
+}
+
+[data-layout="cityPanel"] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+[data-layout="cityPanel"] button {
+    width: 100%;
+    border: 0;
+    border-radius: 14px;
+    background: #ba1f33;
+    color: #ffffff;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+}
+
+[data-layout="cityPanel"] button[data-active="true"] {
+    background: #8f1525;
+}
+
 h1,
 h2 {
     margin: 0 0 1rem;
@@ -83,6 +113,14 @@ ul {
     main {
         width: min(100% - 1.25rem, 900px);
         padding-top: 1.25rem;
+    }
+
+    [data-layout="mapSection"] {
+        grid-template-columns: 1fr;
+    }
+
+    [data-layout="cityPanel"] {
+        order: -1;
     }
 
     #map {

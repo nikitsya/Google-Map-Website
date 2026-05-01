@@ -15,8 +15,13 @@
     <p>Explore Mexico City, Guadalajara, and Monterrey as host city destinations for World Cup 2026 travel.</p>
 </header>
 <main>
-    <section>
+    <section data-layout="mapSection">
         <div aria-label="Google Map" id="map"></div>
+        <aside data-layout="cityPanel">
+            <button type="button" data-city-button="0">Mexico City</button>
+            <button type="button" data-city-button="1">Guadalajara</button>
+            <button type="button" data-city-button="2">Monterrey</button>
+        </aside>
     </section>
 </main>
 <script src="index.js"></script>

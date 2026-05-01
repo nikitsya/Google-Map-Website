@@ -21,6 +21,8 @@ function loadMap() {
 
     const infoWindow = new google.maps.InfoWindow();
     const bounds = new google.maps.LatLngBounds();
+    const cityButtons = document.querySelectorAll("[data-city-button]");
+    const cityMarkers = [];
 
     locations.forEach(location => {
         const position = new google.maps.LatLng(location[LATITUDE], location[LONGITUDE]);
@@ -29,6 +31,7 @@ function loadMap() {
             map: map
         });
 
+        cityMarkers.push(marker);
         bounds.extend(position);
 
         marker.addListener("click", () => {
@@ -41,6 +44,31 @@ function loadMap() {
     });
 
     map.fitBounds(bounds);
+
+    cityButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const cityIndex = Number(button.getAttribute("data-city-button"));
+            const selectedLocation = locations[cityIndex];
+            const selectedMarker = cityMarkers[cityIndex];
+
+            if (!selectedLocation || !selectedMarker) {
+                return;
+            }
+
+            cityButtons.forEach(cityButton => {
+                cityButton.removeAttribute("data-active");
+            });
+
+            button.setAttribute("data-active", "true");
+            map.setCenter(new google.maps.LatLng(selectedLocation[LATITUDE], selectedLocation[LONGITUDE]));
+            map.setZoom(11);
+            infoWindow.setContent(selectedLocation[CONTENT]);
+            infoWindow.open({
+                anchor: selectedMarker,
+                map
+            });
+        });
+    });
 }
 
 window.loadMap = loadMap;
