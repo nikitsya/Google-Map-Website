@@ -2,13 +2,15 @@ const MARKER_SIZE = 42
 
 const STADIUM_MARKER_ICON = "images/markers/stadium.png"
 const HOTEL_MARKER_ICON = "images/markers/hotel.png"
+const CAFE_MARKER_ICON = "images/markers/caffe.png"
 
 export class MapManager {
 
-    constructor(mapElementId, stadiums, hotelSearches) {
+    constructor(mapElementId, stadiums, hotelSearches, cafeSearches) {
         this.mapElementId = mapElementId
         this.stadiums = stadiums
         this.hotelSearches = hotelSearches
+        this.cafeSearches = cafeSearches
 
         this.map = null
         this.placesService = null
@@ -17,7 +19,9 @@ export class MapManager {
 
         this.stadiumMarkers = []
         this.hotelMarkers = []
+        this.cafeMarkers = []
         this.hotelPlaceIds = new Set()
+        this.cafePlaceIds = new Set()
     }
 
     init() {
@@ -37,6 +41,7 @@ export class MapManager {
 
         this.renderStadiumMarkers()
         this.renderHotelMarkers()
+        this.renderCafeMarkers()
         this.showAllCities()
     }
 
@@ -112,7 +117,66 @@ export class MapManager {
         marker.addListener("click", () => {
             this.infoWindow.setContent(`
                 <strong>${hotel.name}</strong><br>
-                ${hotel.vicinity || "Hotel near the host city"}
+                ${hotel.vicinity || "Hotel near the stadium"}
+            `)
+            this.infoWindow.open({
+                anchor: marker,
+                map: this.map
+            })
+        })
+    }
+
+    renderCafeMarkers() {
+        this.cafeSearches.forEach(search => {
+            const location = new google.maps.LatLng(search.latitude, search.longitude)
+
+            this.placesService.nearbySearch({
+                location: location,
+                radius: search.radius,
+                type: "cafe"
+            }, (cafes, status, pagination) => {
+                if (status !== google.maps.places.PlacesServiceStatus.OK || !cafes) {
+                    return
+                }
+
+                cafes.forEach(cafe => {
+                    this.renderCafeMarker(cafe)
+                })
+
+                if (pagination && pagination.hasNextPage) {
+                    setTimeout(() => pagination.nextPage(), 1000)
+                }
+            })
+        })
+    }
+
+    renderCafeMarker(cafe) {
+        if (!cafe.geometry || !cafe.geometry.location || this.cafePlaceIds.has(cafe.place_id)) {
+            return
+        }
+
+        if (!cafe.types || !cafe.types.includes("cafe")) {
+            return
+        }
+
+        const marker = new google.maps.Marker({
+            icon: {
+                url: CAFE_MARKER_ICON,
+                scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)
+            },
+            map: this.map,
+            position: cafe.geometry.location,
+            title: cafe.name
+        })
+
+        this.cafePlaceIds.add(cafe.place_id)
+        this.cafeMarkers.push(marker)
+        this.bounds.extend(cafe.geometry.location)
+
+        marker.addListener("click", () => {
+            this.infoWindow.setContent(`
+                <strong>${cafe.name}</strong><br>
+                ${cafe.vicinity || "Cafe near the stadium"}
             `)
             this.infoWindow.open({
                 anchor: marker,
