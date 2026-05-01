@@ -24,12 +24,17 @@
         </aside>
     </section>
 </main>
-<script src="index.js"></script>
+<script>
+    window.initialiseMapPage = async () => {
+        const {initialiseMapPage} = await import("./index.js");
+        initialiseMapPage();
+    };
+</script>
 
 <!-- Google Maps -->
 <script
         async
-        src=https://maps.googleapis.com/maps/api/js?key=AIzaSyCfjx8fhVFeMj08EbVfEiVS9AUz-RmN2BM&loading=async&callback=loadMap&libraries=marker,places>
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfjx8fhVFeMj08EbVfEiVS9AUz-RmN2BM&loading=async&callback=initialiseMapPage&libraries=marker,places">
 </script>
 </body>
 </html>
