@@ -15,7 +15,8 @@ function loadMap() {
 
     const map = new google.maps.Map(document.getElementById("map"), {
         center: new google.maps.LatLng(locations[0][LATITUDE], locations[0][LONGITUDE]),
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeControl: false
     });
 
     const infoWindow = new google.maps.InfoWindow();
