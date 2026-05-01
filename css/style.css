@@ -2,17 +2,26 @@
     box-sizing: border-box;
 }
 
+:root {
+    --bottomBackgroundHeight: 56.25vw;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
     color: #1f2933;
-    background: #dceccf;
+    min-height: 100vh;
+    background-color: #dceccf;
+    background-image: url("../images/world-cup-trophy-fifa-football_3228493.jpg");
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-size: 100% auto;
 }
 
 main {
     width: min(100% - 2rem, 900px);
     margin: 0 auto;
-    padding: 2rem 0 3rem;
+    padding: 2rem 0 calc(var(--bottomBackgroundHeight) + 2rem);
 }
 
 section {
