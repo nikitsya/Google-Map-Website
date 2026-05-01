@@ -1,9 +1,9 @@
-import {locations, stadiums} from "./js/data/locations.js"
+import {hotelSearches, locations, stadiums} from "./js/data/locations.js"
 import {MapManager} from "./js/map/MapManager.js"
 
 export function initialiseMapPage() {
     const cityButtons = document.querySelectorAll(".ns_cityButton")
-    const mapManager = new MapManager("ns_map", locations, stadiums)
+    const mapManager = new MapManager("ns_map", locations, stadiums, hotelSearches)
 
     mapManager.init()
 
