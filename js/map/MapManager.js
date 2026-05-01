@@ -1,4 +1,5 @@
 const MARKER_SIZE = 42
+const NEARBY_SEARCH_RADIUS = 6000
 
 const STADIUM_MARKER_ICON = "images/markers/stadium.png"
 const HOTEL_MARKER_ICON = "images/markers/hotel.png"
@@ -6,11 +7,9 @@ const CAFE_MARKER_ICON = "images/markers/caffe.png"
 
 export class MapManager {
 
-    constructor(mapElementId, stadiums, hotelSearches, cafeSearches) {
+    constructor(mapElementId, stadiums) {
         this.mapElementId = mapElementId
         this.stadiums = stadiums
-        this.hotelSearches = hotelSearches
-        this.cafeSearches = cafeSearches
 
         this.map = null
         this.placesService = null
@@ -72,12 +71,12 @@ export class MapManager {
     }
 
     renderHotelMarkers() {
-        this.hotelSearches.forEach(search => {
-            const location = new google.maps.LatLng(search.latitude, search.longitude)
+        this.stadiums.forEach(stadium => {
+            const location = new google.maps.LatLng(stadium.latitude, stadium.longitude)
 
             this.placesService.nearbySearch({
                 location: location,
-                radius: search.radius,
+                radius: NEARBY_SEARCH_RADIUS,
                 type: "lodging"
             }, (hotels, status, pagination) => {
                 if (status !== google.maps.places.PlacesServiceStatus.OK || !hotels) {
@@ -127,12 +126,12 @@ export class MapManager {
     }
 
     renderCafeMarkers() {
-        this.cafeSearches.forEach(search => {
-            const location = new google.maps.LatLng(search.latitude, search.longitude)
+        this.stadiums.forEach(stadium => {
+            const location = new google.maps.LatLng(stadium.latitude, stadium.longitude)
 
             this.placesService.nearbySearch({
                 location: location,
-                radius: search.radius,
+                radius: NEARBY_SEARCH_RADIUS,
                 type: "cafe"
             }, (cafes, status, pagination) => {
                 if (status !== google.maps.places.PlacesServiceStatus.OK || !cafes) {
