@@ -28,20 +28,20 @@ section {
     margin-bottom: 1.5rem;
 }
 
-[data-layout="mapSection"] {
+.ns_mapSection {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 220px;
     gap: 1rem;
     align-items: start;
 }
 
-[data-layout="cityPanel"] {
+.ns_cityPanel {
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
 }
 
-[data-layout="cityPanel"] button {
+.ns_cityButton {
     width: 100%;
     border: 0;
     border-radius: 14px;
@@ -54,7 +54,7 @@ section {
     cursor: pointer;
 }
 
-[data-layout="cityPanel"] button[data-active="true"] {
+.ns_cityButton.ns_active {
     background: #8f1525;
 }
 
@@ -95,7 +95,7 @@ header p {
     border-radius: 0 0 16px 16px;
 }
 
-#map {
+#ns_map {
     width: 100%;
     height: 65vh;
     min-height: 420px;
@@ -115,15 +115,15 @@ ul {
         padding-top: 1.25rem;
     }
 
-    [data-layout="mapSection"] {
+    .ns_mapSection {
         grid-template-columns: 1fr;
     }
 
-    [data-layout="cityPanel"] {
+    .ns_cityPanel {
         order: -1;
     }
 
-    #map {
+    #ns_map {
         min-height: 320px;
     }
 
