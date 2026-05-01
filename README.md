@@ -22,3 +22,19 @@ and Monterrey.
 | Allow the user to find a route between various locations                                                                                                                                                                                                                                                                 |         5 |                |
 | Allow the user to select multiple stops along a route                                                                                                                                                                                                                                                                    |         5 |                |
 | Be downloadable onto a computer, mobile phone or tablet as a Progressive Web App (PWA)                                                                                                                                                                                                                                   |         5 |                |
+| You must upload your assignment in Moodle as a single .zip file.                                                                                                                                                                                                                                                         |           |                |
+| All CSS id and class names must be in camelCase, with the exception that you must include your initials (in lowercase) followed by an underscore (_) in front of all id and class names. For example, id=‘ns_productsTable’                                                                                              |           |                |
+
+## Responsive Design Requirements
+
+The app must be responsive, so that it works well and differently across these device sizes:
+
+- Mobile phones (< 600px) in both **portrait** and **landscape** mode.
+- Tablets (between 600px and 768px) in both **portrait** and **landscape** mode.
+- Computers (> 768px).
+
+The responsive design marks are split across these requirements:
+
+- Use a hamburger menu on mobile phones. Use a horizontal bar menu on tablets and computers. **(5%)**
+- Images and other content should scale well and display appropriately on each device. The user should not be expected
+  to scroll horizontally on the screen. Do not use any tables on mobile phones or tablets. **(5%)**
