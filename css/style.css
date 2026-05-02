@@ -11,8 +11,8 @@ body {
 
 /* Main page layout */
 main {
-    width: auto;
-    margin: 0 0 0 32px;
+    width: calc(100% - 64px);
+    margin: 0 32px;
     padding: 24px 0 850px;
 }
 
