@@ -171,10 +171,7 @@ export class MapManager {
 
         marker.addListener("click", () => {
             // Reuse one info window instead of opening many at the same time.
-            this.infoWindow.setContent(`
-                <strong>${hotel.name}</strong><br>
-                ${hotel.vicinity || "Hotel near the stadium"}
-            `)
+            this.infoWindow.setContent(this.buildPlaceContent(hotel, "Hotel near the stadium"))
             this.infoWindow.open({
                 anchor: marker,
                 map: this.map
@@ -232,10 +229,7 @@ export class MapManager {
 
         marker.addListener("click", () => {
             // Reuse one info window instead of opening many at the same time.
-            this.infoWindow.setContent(`
-                <strong>${cafe.name}</strong><br>
-                ${cafe.vicinity || "Cafe near the stadium"}
-            `)
+            this.infoWindow.setContent(this.buildPlaceContent(cafe, "Cafe near the stadium"))
             this.infoWindow.open({
                 anchor: marker,
                 map: this.map
@@ -296,16 +290,28 @@ export class MapManager {
 
         marker.addListener("click", () => {
             // Reuse one info window instead of opening many at the same time.
-            this.infoWindow.setContent(`
-                <strong>${restaurant.name}</strong><br>
-                ${restaurant.vicinity || "Restaurant near the stadium"}
-            `)
+            this.infoWindow.setContent(this.buildPlaceContent(restaurant, "Restaurant near the stadium"))
             this.infoWindow.open({
                 anchor: marker,
                 map: this.map
             })
         })
         this.updateNearbyMarkers()
+    }
+
+    buildPlaceContent(place, fallbackText) {
+        // Add the first Google Places photo when one is available.
+        const photoUrl = place.photos && place.photos.length > 0
+            ? place.photos[0].getUrl({maxWidth: 260, maxHeight: 160})
+            : null
+
+        return `
+            <div class="ns_placeInfo">
+                ${photoUrl ? `<img alt="${place.name}" class="ns_placePhoto" src="${photoUrl}">` : ""}
+                <strong>${place.name}</strong><br>
+                ${place.vicinity || fallbackText}
+            </div>
+        `
     }
 
     showAllCities() {

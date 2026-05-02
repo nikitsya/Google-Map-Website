@@ -156,6 +156,20 @@ p, li {
     background: #dfe7ef;
 }
 
+/* Google Places info window */
+.ns_placeInfo {
+    width: 260px;
+    font-size: 14px;
+}
+
+.ns_placePhoto {
+    width: 260px;
+    height: 150px;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 8px;
+}
+
 /* List spacing */
 ul {
     margin: 0;
