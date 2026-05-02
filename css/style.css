@@ -169,21 +169,21 @@ p, li {
     width: 76px;
     height: 76px;
     border: 0;
-    border-radius: 8px;
-    background: #ffffff;
+    background: url("../images/ratings/starGrey.png") center / contain;
     color: #17364d;
     font-size: 24px;
     font-weight: 700;
     cursor: pointer;
+    padding: 0;
 }
 
 .ns_ratingButton.ns_active {
-    background: #ba1f33;
+    background-image: url("../images/ratings/star.png");
     color: #ffffff;
 }
 
 .ns_ratingButton:disabled {
-    background: #d1d5db;
+    background-image: url("../images/ratings/starGrey.png");
     color: #6b7280;
     cursor: not-allowed;
 }
