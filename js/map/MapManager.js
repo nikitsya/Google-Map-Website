@@ -1,5 +1,6 @@
 const MARKER_SIZE = 42
-const NEARBY_SEARCH_RADIUS = 6000
+const SEARCH_RADIUS = 6000
+const VISIBLE_ZOOM = 13
 
 const STADIUM_MARKER_ICON = "images/markers/stadium.png"
 const HOTEL_MARKER_ICON = "images/markers/hotel.png"
@@ -7,9 +8,9 @@ const CAFE_MARKER_ICON = "images/markers/caffe.png"
 
 export class MapManager {
 
-    constructor(mapElementId, stadiums) {
-        this.mapElementId = mapElementId
+    constructor(stadiums) {
         this.stadiums = stadiums
+        this.activeStadiumIndex = null
 
         this.map = null
         this.placesService = null
@@ -21,31 +22,32 @@ export class MapManager {
         this.cafeMarkers = []
         this.hotelPlaceIds = new Set()
         this.cafePlaceIds = new Set()
+        this.loadedHotelStadiumIndexes = new Set()
+        this.loadedCafeStadiumIndexes = new Set()
     }
 
     init() {
-        if (!window.google || !window.google.maps) {
-            return
-        }
+        if (!window.google || !window.google.maps) return
 
-        this.map = new google.maps.Map(document.getElementById(this.mapElementId), {
+        this.map = new google.maps.Map(document.getElementById("ns_map"), {
             center: new google.maps.LatLng(this.stadiums[0].latitude, this.stadiums[0].longitude),
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             mapTypeControl: false
         })
-
         this.placesService = new google.maps.places.PlacesService(this.map)
         this.infoWindow = new google.maps.InfoWindow()
         this.bounds = new google.maps.LatLngBounds()
 
         this.renderStadiumMarkers()
-        this.renderHotelMarkers()
-        this.renderCafeMarkers()
         this.showAllCities()
+
+        this.map.addListener("zoom_changed", () => {
+            this.updateNearbyMarkers()
+        })
     }
 
     renderStadiumMarkers() {
-        this.stadiums.forEach(stadium => {
+        this.stadiums.forEach((stadium, index) => {
             const position = new google.maps.LatLng(stadium.latitude, stadium.longitude)
             const marker = new google.maps.Marker({
                 icon: {
@@ -61,57 +63,70 @@ export class MapManager {
             this.bounds.extend(position)
 
             marker.addListener("click", () => {
-                this.infoWindow.setContent(stadium.content)
-                this.infoWindow.open({
-                    anchor: marker,
-                    map: this.map
-                })
+                this.focusOnCity(index)
             })
         })
     }
 
-    renderHotelMarkers() {
-        this.stadiums.forEach(stadium => {
-            const location = new google.maps.LatLng(stadium.latitude, stadium.longitude)
+    updateNearbyMarkers() {
+        if (this.activeStadiumIndex === null) return
 
-            this.placesService.nearbySearch({
-                location: location,
-                radius: NEARBY_SEARCH_RADIUS,
-                type: "lodging"
-            }, (hotels, status, pagination) => {
-                if (status !== google.maps.places.PlacesServiceStatus.OK || !hotels) {
-                    return
-                }
+        const zoom = this.map.getZoom()
 
-                hotels.forEach(hotel => {
-                    this.renderHotelMarker(hotel)
-                })
-
-                if (pagination && pagination.hasNextPage) {
-                    setTimeout(() => pagination.nextPage(), 1000)
-                }
-            })
-        })
-    }
-
-    renderHotelMarker(hotel) {
-        if (!hotel.geometry || !hotel.geometry.location || this.hotelPlaceIds.has(hotel.place_id)) {
-            return
+        if (zoom >= VISIBLE_ZOOM) {
+            this.loadHotelMarkers(this.activeStadiumIndex)
+            this.loadCafeMarkers(this.activeStadiumIndex)
         }
+
+        this.hotelMarkers.forEach(({marker, stadiumIndex}) => {
+            const shouldShowMarker = this.activeStadiumIndex === stadiumIndex && zoom >= VISIBLE_ZOOM
+            marker.setMap(shouldShowMarker ? this.map : null)
+        })
+        this.cafeMarkers.forEach(({marker, stadiumIndex}) => {
+            const shouldShowMarker = this.activeStadiumIndex === stadiumIndex && zoom >= VISIBLE_ZOOM
+            marker.setMap(shouldShowMarker ? this.map : null)
+        })
+    }
+
+    loadHotelMarkers(stadiumIndex) {
+        if (this.loadedHotelStadiumIndexes.has(stadiumIndex)) return
+
+        const stadium = this.stadiums[stadiumIndex]
+        const location = new google.maps.LatLng(stadium.latitude, stadium.longitude)
+
+        this.loadedHotelStadiumIndexes.add(stadiumIndex)
+        this.placesService.nearbySearch({
+            location: location,
+            radius: SEARCH_RADIUS,
+            type: "lodging"
+        }, (hotels, status, pagination) => {
+            if (status !== google.maps.places.PlacesServiceStatus.OK || !hotels) return
+
+            hotels.forEach(hotel => {
+                this.renderHotelMarker(hotel, stadiumIndex)
+            })
+
+            if (pagination && pagination.hasNextPage) {
+                setTimeout(() => pagination.nextPage(), 1000)
+            }
+        })
+    }
+
+    renderHotelMarker(hotel, stadiumIndex) {
+        if (!hotel.geometry || !hotel.geometry.location || this.hotelPlaceIds.has(hotel.place_id)) return
 
         const marker = new google.maps.Marker({
             icon: {
                 url: HOTEL_MARKER_ICON,
                 scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)
             },
-            map: this.map,
+            map: null,
             position: hotel.geometry.location,
             title: hotel.name
         })
 
         this.hotelPlaceIds.add(hotel.place_id)
-        this.hotelMarkers.push(marker)
-        this.bounds.extend(hotel.geometry.location)
+        this.hotelMarkers.push({marker: marker, stadiumIndex: stadiumIndex})
 
         marker.addListener("click", () => {
             this.infoWindow.setContent(`
@@ -123,54 +138,49 @@ export class MapManager {
                 map: this.map
             })
         })
+        this.updateNearbyMarkers()
     }
 
-    renderCafeMarkers() {
-        this.stadiums.forEach(stadium => {
-            const location = new google.maps.LatLng(stadium.latitude, stadium.longitude)
+    loadCafeMarkers(stadiumIndex) {
+        if (this.loadedCafeStadiumIndexes.has(stadiumIndex)) return
 
-            this.placesService.nearbySearch({
-                location: location,
-                radius: NEARBY_SEARCH_RADIUS,
-                type: "cafe"
-            }, (cafes, status, pagination) => {
-                if (status !== google.maps.places.PlacesServiceStatus.OK || !cafes) {
-                    return
-                }
+        const stadium = this.stadiums[stadiumIndex]
+        const location = new google.maps.LatLng(stadium.latitude, stadium.longitude)
 
-                cafes.forEach(cafe => {
-                    this.renderCafeMarker(cafe)
-                })
+        this.loadedCafeStadiumIndexes.add(stadiumIndex)
+        this.placesService.nearbySearch({
+            location: location,
+            radius: SEARCH_RADIUS,
+            type: "cafe"
+        }, (cafes, status, pagination) => {
+            if (status !== google.maps.places.PlacesServiceStatus.OK || !cafes) return
 
-                if (pagination && pagination.hasNextPage) {
-                    setTimeout(() => pagination.nextPage(), 1000)
-                }
+            cafes.forEach(cafe => {
+                this.renderCafeMarker(cafe, stadiumIndex)
             })
+
+            if (pagination && pagination.hasNextPage) {
+                setTimeout(() => pagination.nextPage(), 1000)
+            }
         })
     }
 
-    renderCafeMarker(cafe) {
-        if (!cafe.geometry || !cafe.geometry.location || this.cafePlaceIds.has(cafe.place_id)) {
-            return
-        }
-
-        if (!cafe.types || !cafe.types.includes("cafe")) {
-            return
-        }
+    renderCafeMarker(cafe, stadiumIndex) {
+        if (!cafe.geometry || !cafe.geometry.location || this.cafePlaceIds.has(cafe.place_id)) return
+        if (!cafe.types || !cafe.types.includes("cafe")) return
 
         const marker = new google.maps.Marker({
             icon: {
                 url: CAFE_MARKER_ICON,
                 scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)
             },
-            map: this.map,
+            map: null,
             position: cafe.geometry.location,
             title: cafe.name
         })
 
         this.cafePlaceIds.add(cafe.place_id)
-        this.cafeMarkers.push(marker)
-        this.bounds.extend(cafe.geometry.location)
+        this.cafeMarkers.push({marker: marker, stadiumIndex: stadiumIndex})
 
         marker.addListener("click", () => {
             this.infoWindow.setContent(`
@@ -182,6 +192,7 @@ export class MapManager {
                 map: this.map
             })
         })
+        this.updateNearbyMarkers()
     }
 
     showAllCities() {
@@ -200,11 +211,13 @@ export class MapManager {
             selectedStadium.latitude,
             selectedStadium.longitude
         ))
-        this.map.setZoom(11)
+        this.activeStadiumIndex = index
+        this.map.setZoom(VISIBLE_ZOOM)
         this.infoWindow.setContent(selectedStadium.content)
         this.infoWindow.open({
             anchor: selectedMarker,
             map: this.map
         })
+        this.updateNearbyMarkers()
     }
 }
