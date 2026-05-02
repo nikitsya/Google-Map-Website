@@ -5,6 +5,7 @@ const VISIBLE_ZOOM = 13
 const STADIUM_MARKER_ICON = "images/markers/stadium.png"
 const HOTEL_MARKER_ICON = "images/markers/hotel.png"
 const CAFE_MARKER_ICON = "images/markers/caffe.png"
+const RESTAURANT_MARKER_ICON = "images/markers/restaurant.png"
 
 /**
  * Manages the Google Map, stadium markers, and nearby place markers.
@@ -28,14 +29,17 @@ export class MapManager {
         this.stadiumMarkers = []
         this.hotelMarkers = []
         this.cafeMarkers = []
+        this.restaurantMarkers = []
 
-        // Remember Google Places IDs to stop duplicate hotel and cafe markers.
+        // Remember Google Places IDs to stop duplicate hotel, cafe, and restaurant markers.
         this.hotelPlaceIds = new Set()
         this.cafePlaceIds = new Set()
+        this.restaurantPlaceIds = new Set()
 
         // Remember which stadiums already loaded nearby places.
         this.loadedHotelStadiumIndexes = new Set()
         this.loadedCafeStadiumIndexes = new Set()
+        this.loadedRestaurantStadiumIndexes = new Set()
     }
 
     init() {
@@ -89,10 +93,11 @@ export class MapManager {
 
         const zoom = this.map.getZoom()
 
-        // Load hotels and cafés only when the user is close enough to the stadium.
+        // Load hotels, cafés, and restaurants only when the user is close enough to the stadium.
         if (zoom >= VISIBLE_ZOOM) {
             this.loadHotelMarkers(this.activeStadiumIndex)
             this.loadCafeMarkers(this.activeStadiumIndex)
+            this.loadRestaurantMarkers(this.activeStadiumIndex)
         }
 
         // Hide nearby markers again when the user zooms back out.
@@ -101,6 +106,10 @@ export class MapManager {
             marker.setMap(shouldShowMarker ? this.map : null)
         })
         this.cafeMarkers.forEach(({marker, stadiumIndex}) => {
+            const shouldShowMarker = this.activeStadiumIndex === stadiumIndex && zoom >= VISIBLE_ZOOM
+            marker.setMap(shouldShowMarker ? this.map : null)
+        })
+        this.restaurantMarkers.forEach(({marker, stadiumIndex}) => {
             const shouldShowMarker = this.activeStadiumIndex === stadiumIndex && zoom >= VISIBLE_ZOOM
             marker.setMap(shouldShowMarker ? this.map : null)
         })
@@ -193,6 +202,10 @@ export class MapManager {
         // Skip places without a position and avoid duplicated markers.
         if (!cafe.geometry || !cafe.geometry.location || this.cafePlaceIds.has(cafe.place_id)) return
         if (!cafe.types || !cafe.types.includes("cafe")) return
+        if (
+            cafe.types.includes("restaurant") ||
+            cafe.types.includes("dining")
+        ) return
 
         const marker = new google.maps.Marker({
             icon: {
@@ -212,6 +225,72 @@ export class MapManager {
             this.infoWindow.setContent(`
                 <strong>${cafe.name}</strong><br>
                 ${cafe.vicinity || "Cafe near the stadium"}
+            `)
+            this.infoWindow.open({
+                anchor: marker,
+                map: this.map
+            })
+        })
+        this.updateNearbyMarkers()
+    }
+
+    loadRestaurantMarkers(stadiumIndex) {
+        // Avoid requesting restaurants for the same stadium more than once.
+        if (this.loadedRestaurantStadiumIndexes.has(stadiumIndex)) return
+
+        const stadium = this.stadiums[stadiumIndex]
+        const location = new google.maps.LatLng(stadium.latitude, stadium.longitude)
+
+        this.loadedRestaurantStadiumIndexes.add(stadiumIndex)
+        this.placesService.nearbySearch({
+            keyword: "restaurant dining",
+            location: location,
+            radius: SEARCH_RADIUS,
+            type: "restaurant"
+        }, (restaurants, status, pagination) => {
+            if (status !== google.maps.places.PlacesServiceStatus.OK || !restaurants) return
+
+            restaurants.forEach(restaurant => {
+                this.renderRestaurantMarker(restaurant, stadiumIndex)
+            })
+
+            // Google Places returns extra results in pages.
+            if (pagination && pagination.hasNextPage) {
+                setTimeout(() => pagination.nextPage(), 1000)
+            }
+        })
+    }
+
+    renderRestaurantMarker(restaurant, stadiumIndex) {
+        // Skip places without a position, duplicate places, and casual cafe or takeaway results.
+        if (!restaurant.geometry || !restaurant.geometry.location || this.restaurantPlaceIds.has(restaurant.place_id)) return
+        if (!restaurant.types || !restaurant.types.includes("restaurant")) return
+        if (
+            restaurant.types.includes("cafe") ||
+            restaurant.types.includes("bakery") ||
+            restaurant.types.includes("meal_takeaway") ||
+            restaurant.types.includes("meal_delivery") ||
+            restaurant.types.includes("fast_food_restaurant")
+        ) return
+
+        const marker = new google.maps.Marker({
+            icon: {
+                url: RESTAURANT_MARKER_ICON,
+                scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)
+            },
+            map: null,
+            position: restaurant.geometry.location,
+            title: restaurant.name
+        })
+
+        this.restaurantPlaceIds.add(restaurant.place_id)
+        this.restaurantMarkers.push({marker: marker, stadiumIndex: stadiumIndex})
+
+        marker.addListener("click", () => {
+            // Reuse one info window instead of opening many at the same time.
+            this.infoWindow.setContent(`
+                <strong>${restaurant.name}</strong><br>
+                ${restaurant.vicinity || "Restaurant near the stadium"}
             `)
             this.infoWindow.open({
                 anchor: marker,
