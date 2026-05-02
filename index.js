@@ -1,10 +1,11 @@
-import {stadiums} from "./js/data/locations.js"
+import {loadStadiums} from "./js/data/locations.js"
 import {MapManager} from "./js/map/MapManager.js"
 
 /**
  * Initialises the Google Map and connects city buttons to stadium markers.
  */
-export function initialiseMapPage() {
+export async function initialiseMapPage() {
+    const stadiums = await loadStadiums()
     const cityButtons = document.querySelectorAll(".ns_cityButton")
     const categoryButtons = document.querySelectorAll(".ns_categoryButton")
 

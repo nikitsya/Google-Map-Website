@@ -42,16 +42,16 @@
     </section>
 </main>
 <script>
-    window.initialiseMapPage = async () => {
+    window.initialiseGoogleMapPage = async () => {
         const {initialiseMapPage} = await import("./index.js")
-        initialiseMapPage()
+        await initialiseMapPage()
     }
 </script>
 
 <!-- Google Maps -->
 <script
         async
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfjx8fhVFeMj08EbVfEiVS9AUz-RmN2BM&loading=async&callback=initialiseMapPage&libraries=marker,places">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfjx8fhVFeMj08EbVfEiVS9AUz-RmN2BM&loading=async&callback=initialiseGoogleMapPage&libraries=marker,places">
 </script>
 </body>
 </html>

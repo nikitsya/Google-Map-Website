@@ -1,23 +1,7 @@
-export const stadiums = [
-    {
-        name: "Estadio Azteca",
-        city: "Mexico City",
-        latitude: 19.3029,
-        longitude: -99.1505,
-        content: "<strong>Estadio Azteca</strong><br>World Cup stadium in Mexico City"
-    },
-    {
-        name: "Estadio Akron",
-        city: "Guadalajara",
-        latitude: 20.6819,
-        longitude: -103.4629,
-        content: "<strong>Estadio Akron</strong><br>World Cup stadium in Guadalajara"
-    },
-    {
-        name: "Estadio BBVA",
-        city: "Monterrey",
-        latitude: 25.6683,
-        longitude: -100.2446,
-        content: "<strong>Estadio BBVA</strong><br>World Cup stadium in Monterrey"
-    }
-]
+const LOCATIONS_FILE = "./js/data/locations.json"
+
+export async function loadStadiums() {
+    const response = await fetch(LOCATIONS_FILE)
+    const locations = await response.json()
+    return locations.stadiums
+}
