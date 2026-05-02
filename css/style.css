@@ -110,6 +110,14 @@ p, li {
     gap: 12px;
 }
 
+.ns_filterTitle {
+    width: 76px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+}
+
 .ns_categoryButton {
     width: 76px;
     height: 76px;
@@ -321,6 +329,10 @@ ul {
         width: 66px;
         height: 66px;
         font-size: 10px;
+    }
+
+    .ns_filterTitle {
+        width: 66px;
     }
 
     .ns_ratingFilter {
