@@ -1,62 +1,89 @@
-/* Global reset */
-* {
-    box-sizing: border-box;
-}
-
-/* Shared page values */
-:root {
-    --bottomBackgroundHeight: 56.25vw;
-}
-
 /* Page background */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    color: #1f2933;
-    min-height: 100vh;
     background-image: url("../images/world-cup-trophy-fifa-football.jpg");
     background-repeat: no-repeat;
     background-position: center bottom;
     background-size: 100% auto;
-    background-color: #1a4c6c;
+    background-color: #0f286e;
 }
 
 /* Main page layout */
 main {
-    width: min(100% - 2rem, 900px);
-    margin: 0 auto;
-    padding: 1.5rem 0 calc(var(--bottomBackgroundHeight) + 2rem);
+    width: 880px;
+    margin: 0 0 0 32px;
+    padding: 24px 0 850px;
 }
 
 section {
-    margin-bottom: 1.5rem;
+    margin-bottom: 24px;
 }
 
 /* Map area layout */
 .ns_mapSection {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 220px;
-    gap: 1rem;
+    grid-template-columns: 776px 88px;
+    gap: 16px;
     align-items: start;
 }
 
-/* City navigation */
-.ns_cityPanel {
+/* Header */
+.ns_pageHeader {
+    background: #f4c542;
+    color: #17364d;
+}
+
+.ns_headerContent {
+    width: 1180px;
+    margin: 0 auto;
+    padding: 16px 0;
     display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.ns_headerIcon {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+}
+
+.ns_headerText {
+    width: 560px;
+}
+
+.ns_pageHeader h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.ns_pageHeader p {
+    margin: 4px 0 0;
+    color: #17364d;
+    font-size: 15px;
+}
+
+/* City navigation */
+.ns_cityControls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-left: auto;
 }
 
 .ns_cityButton {
-    width: 100%;
+    width: 132px;
     border: 0;
-    border-radius: 14px;
+    border-radius: 10px;
     background: #ba1f33;
     color: #ffffff;
-    padding: 1rem;
-    font-size: 1rem;
+    padding: 13px 12px;
+    font-size: 15px;
     font-weight: 700;
-    text-align: left;
+    text-align: center;
     cursor: pointer;
 }
 
@@ -66,57 +93,65 @@ section {
 
 /* Text spacing */
 h1, h2 {
-    margin: 0 0 1rem;
+    margin: 0 0 16px;
 }
 
 p, li {
     line-height: 1.6;
 }
 
-/* Header */
-.ns_pageHeader {
-    width: 100%;
-    background: #f4c542;
-    color: #17364d;
-    box-shadow: 0 2px 16px rgba(7, 31, 20, 0.22);
-}
-
-.ns_headerContent {
-    width: min(100% - 2rem, 900px);
-    margin: 0 auto;
-    padding: 1rem 0;
+/* Category filters */
+.ns_categoryPanel {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    justify-content: flex-start;
+    gap: 12px;
 }
 
-.ns_headerIcon {
-    width: 52px;
-    height: 52px;
-    object-fit: contain;
-    flex: 0 0 auto;
-}
-
-.ns_headerText {
-    min-width: 0;
-}
-
-.ns_pageHeader h1 {
-    margin: 0;
-    font-size: 2rem;
-}
-
-.ns_pageHeader p {
-    margin: 0.25rem 0 0;
+.ns_categoryButton {
+    width: 76px;
+    height: 76px;
+    border: 0;
+    border-radius: 8px;
+    background: #ffffff;
     color: #17364d;
-    font-size: 0.92rem;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ns_categoryButton img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+.ns_categoryButton.ns_active {
+    outline: 3px solid #ba1f33;
+}
+
+.ns_categoryButton:disabled {
+    background: #d1d5db;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+.ns_categoryButton:disabled img {
+    filter: grayscale(1);
+    opacity: 0.38;
 }
 
 /* Google map */
 #ns_map {
-    width: 100%;
-    height: 65vh;
-    min-height: 420px;
+    width: 776px;
+    height: 776px;
     border: 4px solid #283249;
     background: #dfe7ef;
 }
@@ -124,32 +159,73 @@ p, li {
 /* List spacing */
 ul {
     margin: 0;
-    padding-left: 1.2rem;
+    padding-left: 20px;
+}
+
+/* Smaller desktop layout */
+@media (max-width: 1200px) {
+    .ns_headerContent {
+        width: 940px;
+    }
+
+    .ns_headerText {
+        width: 430px;
+    }
+}
+
+/* Tablet layout */
+@media (max-width: 950px) {
+    main {
+        width: 700px;
+        margin: 0 auto;
+        padding: 24px 0 680px;
+    }
+
+    .ns_mapSection {
+        grid-template-columns: 596px 88px;
+    }
+
+    .ns_headerContent {
+        width: 700px;
+    }
+
+    .ns_headerText {
+        width: 620px;
+    }
+
+    .ns_cityControls {
+        width: 700px;
+        justify-content: flex-start;
+        margin-left: 0;
+    }
+
+    #ns_map {
+        width: 596px;
+        height: 596px;
+    }
 }
 
 /* Mobile layout */
 @media (max-width: 600px) {
     main {
-        width: min(100% - 1.25rem, 900px);
-        padding-top: 1.25rem;
+        width: 340px;
+        margin: 0 auto;
+        padding: 20px 0 390px;
+    }
+
+    section {
+        margin-bottom: 20px;
     }
 
     .ns_mapSection {
-        grid-template-columns: 1fr;
-    }
-
-    .ns_cityPanel {
-        order: -1;
-    }
-
-    #ns_map {
-        min-height: 320px;
+        grid-template-columns: 254px 74px;
+        gap: 12px;
     }
 
     .ns_headerContent {
-        width: min(100% - 1.25rem, 900px);
-        padding: 0.85rem 0;
-        gap: 0.75rem;
+        width: 340px;
+        padding: 14px 0;
+        gap: 12px;
     }
 
     .ns_headerIcon {
@@ -157,11 +233,75 @@ ul {
         height: 42px;
     }
 
+    .ns_headerText {
+        width: 286px;
+    }
+
     .ns_pageHeader h1 {
-        font-size: 1.6rem;
+        font-size: 26px;
     }
 
     .ns_pageHeader p {
-        font-size: 0.86rem;
+        font-size: 14px;
+    }
+
+    .ns_cityControls {
+        width: 340px;
+        gap: 8px;
+    }
+
+    .ns_cityButton {
+        width: 108px;
+        padding: 10px 6px;
+        font-size: 13px;
+    }
+
+    .ns_categoryButton {
+        width: 66px;
+        height: 66px;
+        font-size: 10px;
+    }
+
+    .ns_categoryButton img {
+        width: 34px;
+        height: 34px;
+    }
+
+    #ns_map {
+        width: 254px;
+        height: 254px;
+    }
+}
+
+/* Small mobile layout */
+@media (max-width: 400px) {
+    main {
+        width: 300px;
+    }
+
+    .ns_mapSection {
+        grid-template-columns: 214px 74px;
+    }
+
+    .ns_headerContent {
+        width: 300px;
+    }
+
+    .ns_headerText {
+        width: 246px;
+    }
+
+    .ns_cityControls {
+        width: 300px;
+    }
+
+    .ns_cityButton {
+        width: 94px;
+        font-size: 12px;
+    }
+
+    #ns_map {
+        width: 214px;
+        height: 214px;
     }
 }

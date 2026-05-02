@@ -6,20 +6,42 @@ import {MapManager} from "./js/map/MapManager.js"
  */
 export function initialiseMapPage() {
     const cityButtons = document.querySelectorAll(".ns_cityButton")
-    const mapManager = new MapManager(stadiums)
+    const categoryButtons = document.querySelectorAll(".ns_categoryButton")
+
+    const setActiveCityButton = cityIndex => {
+        cityButtons.forEach(cityButton => {
+            cityButton.classList.toggle("ns_active", Number(cityButton.value) === cityIndex)
+        })
+    }
+
+    const resetCategoryButtons = () => {
+        categoryButtons.forEach(categoryButton => {
+            categoryButton.classList.remove("ns_active")
+            categoryButton.disabled = false
+        })
+    }
+
+    const mapManager = new MapManager(stadiums, cityIndex => {
+        setActiveCityButton(cityIndex)
+        resetCategoryButtons()
+    })
 
     mapManager.init()
 
     cityButtons.forEach(button => {
         button.addEventListener("click", () => {
             const cityIndex = Number(button.value)
-
-            cityButtons.forEach(cityButton => {
-                cityButton.classList.remove("ns_active")
-            })
-
-            button.classList.add("ns_active")
             mapManager.focusOnCity(cityIndex)
+        })
+    })
+
+    categoryButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            categoryButtons.forEach(categoryButton => {
+                categoryButton.classList.remove("ns_active")
+            })
+            button.classList.add("ns_active")
+            mapManager.showNearbyCategory(button.value)
         })
     })
 }

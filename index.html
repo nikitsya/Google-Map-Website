@@ -15,15 +15,29 @@
             <h1>World Cup 2026 Mexico Guide</h1>
             <p>Explore Mexico City, Guadalajara, and Monterrey as host city destinations for World Cup 2026 travel.</p>
         </div>
+        <nav class="ns_cityControls">
+            <button class="ns_cityButton" type="button" value="0">Mexico City</button>
+            <button class="ns_cityButton" type="button" value="1">Guadalajara</button>
+            <button class="ns_cityButton" type="button" value="2">Monterrey</button>
+        </nav>
     </div>
 </header>
 <main>
     <section class="ns_mapSection">
-        <div aria-label="Google Map" id="ns_map"></div>
-        <aside class="ns_cityPanel">
-            <button class="ns_cityButton" type="button" value="0">Mexico City</button>
-            <button class="ns_cityButton" type="button" value="1">Guadalajara</button>
-            <button class="ns_cityButton" type="button" value="2">Monterrey</button>
+        <div id="ns_map"></div>
+        <aside class="ns_categoryPanel">
+            <button class="ns_categoryButton" disabled type="button" value="hotel">
+                <img alt="hotel_marker" src="images/markers/hotel.png">
+                <span>Hotels</span>
+            </button>
+            <button class="ns_categoryButton" disabled type="button" value="restaurant">
+                <img alt="restaurant_marker" src="images/markers/restaurant.png">
+                <span>Restaurants</span>
+            </button>
+            <button class="ns_categoryButton" disabled type="button" value="cafe">
+                <img alt="caffe_marker" src="images/markers/caffe.png">
+                <span>Cafes</span>
+            </button>
         </aside>
     </section>
 </main>
