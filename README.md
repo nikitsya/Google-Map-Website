@@ -23,7 +23,7 @@ and Monterrey.
 | Allow the user to select multiple stops along a route                                                                                                                                                                                                                                                                    |         5 |                |
 | Be downloadable onto a computer, mobile phone or tablet as a Progressive Web App (PWA)                                                                                                                                                                                                                                   |         5 |                |
 | You must upload your assignment in Moodle as a single .zip file.                                                                                                                                                                                                                                                         |           |                |
-| `class="ns_highlightedText"`.                                                                                          |           |        ✅      |
+| `class="ns_highlightedText"`                                                                                           |           |        ✅      |
 
 ## Responsive Design Requirements
 
