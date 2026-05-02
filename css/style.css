@@ -11,7 +11,7 @@ body {
 
 /* Main page layout */
 main {
-    width: 910px;
+    width: 1180px;
     margin: 0 0 0 32px;
     padding: 24px 0 850px;
 }
@@ -23,9 +23,15 @@ section {
 /* Map area layout */
 .ns_mapSection {
     display: grid;
+    grid-template-columns: 882px 260px;
+    gap: 16px;
+    align-items: start;
+}
+
+.ns_mapTools {
+    display: grid;
     grid-template-columns: 776px 106px;
     gap: 0;
-    align-items: start;
 }
 
 /* Header */
@@ -201,6 +207,50 @@ p, li {
     cursor: not-allowed;
 }
 
+/* Day planner */
+.ns_dayPanel {
+    box-sizing: border-box;
+    width: 260px;
+    min-height: 320px;
+    padding: 18px;
+    background: #f8fbff;
+    color: #17364d;
+}
+
+.ns_dayPanel h2 {
+    margin: 0 0 10px;
+    font-size: 22px;
+}
+
+.ns_dayIntro {
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.ns_dayButtons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.ns_dayButton {
+    height: 42px;
+    border: 0;
+    border-radius: 8px;
+    background: #d7e6f4;
+    color: #17364d;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ns_dayButton.ns_active {
+    background: #ba1f33;
+    color: #ffffff;
+}
+
 /* Google map */
 #ns_map {
     width: 776px;
@@ -276,6 +326,22 @@ ul {
     .ns_headerText {
         width: 430px;
     }
+
+    main {
+        width: 940px;
+    }
+
+    .ns_mapSection {
+        grid-template-columns: 704px 220px;
+    }
+
+    .ns_mapTools {
+        grid-template-columns: 596px 108px;
+    }
+
+    .ns_dayPanel {
+        width: 220px;
+    }
 }
 
 /* Tablet layout */
@@ -287,7 +353,12 @@ ul {
     }
 
     .ns_mapSection {
-        grid-template-columns: 596px 108px;
+        grid-template-columns: 704px;
+        gap: 16px 0;
+    }
+
+    .ns_dayPanel {
+        width: 704px;
     }
 
     .ns_categoryPanel {
@@ -327,8 +398,12 @@ ul {
     }
 
     .ns_mapSection {
+        grid-template-columns: 340px;
+        gap: 14px 0;
+    }
+
+    .ns_mapTools {
         grid-template-columns: 254px 86px;
-        gap: 0;
     }
 
     .ns_headerContent {
@@ -376,6 +451,15 @@ ul {
         padding: 10px;
     }
 
+    .ns_dayPanel {
+        width: 340px;
+        padding: 14px;
+    }
+
+    .ns_dayPanel h2 {
+        font-size: 20px;
+    }
+
     .ns_filterTitle {
         width: 66px;
     }
@@ -408,11 +492,19 @@ ul {
     }
 
     .ns_mapSection {
+        grid-template-columns: 300px;
+    }
+
+    .ns_mapTools {
         grid-template-columns: 214px 86px;
     }
 
     .ns_categoryPanel {
         height: 222px;
+    }
+
+    .ns_dayPanel {
+        width: 300px;
     }
 
     .ns_headerContent {

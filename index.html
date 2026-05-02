@@ -24,30 +24,45 @@
 </header>
 <main>
     <section class="ns_mapSection">
-        <div id="ns_map"></div>
-        <aside class="ns_categoryPanel">
-            <span class="ns_filterTitle">Places</span>
-            <button class="ns_categoryButton" disabled type="button" value="hotel">
-                <img alt="hotel_marker" src="images/markers/hotel.png">
-                <span>Hotels</span>
-            </button>
-            <button class="ns_categoryButton" disabled type="button" value="restaurant">
-                <img alt="restaurant_marker" src="images/markers/restaurant.png">
-                <span>Restaurants</span>
-            </button>
-            <button class="ns_categoryButton" disabled type="button" value="cafe">
-                <img alt="caffe_marker" src="images/markers/caffe.png">
-                <span>Cafes</span>
-            </button>
-            <div class="ns_ratingFilter">
-                <span>Rating</span>
-                <div class="ns_ratingButtons">
-                    <button class="ns_ratingButton ns_active" disabled type="button" value="5">5</button>
-                    <button class="ns_ratingButton ns_active" disabled type="button" value="4">4</button>
-                    <button class="ns_ratingButton ns_active" disabled type="button" value="3">3</button>
-                    <button class="ns_ratingButton ns_active" disabled type="button" value="2">2</button>
-                    <button class="ns_ratingButton ns_active" disabled type="button" value="1">1</button>
+        <div class="ns_mapTools">
+            <div id="ns_map"></div>
+            <aside class="ns_categoryPanel">
+                <span class="ns_filterTitle">Places</span>
+                <button class="ns_categoryButton" disabled type="button" value="hotel">
+                    <img alt="hotel_marker" src="images/markers/hotel.png">
+                    <span>Hotels</span>
+                </button>
+                <button class="ns_categoryButton" disabled type="button" value="restaurant">
+                    <img alt="restaurant_marker" src="images/markers/restaurant.png">
+                    <span>Restaurants</span>
+                </button>
+                <button class="ns_categoryButton" disabled type="button" value="cafe">
+                    <img alt="caffe_marker" src="images/markers/caffe.png">
+                    <span>Cafes</span>
+                </button>
+                <div class="ns_ratingFilter">
+                    <span>Rating</span>
+                    <div class="ns_ratingButtons">
+                        <button class="ns_ratingButton ns_active" disabled type="button" value="5">5</button>
+                        <button class="ns_ratingButton ns_active" disabled type="button" value="4">4</button>
+                        <button class="ns_ratingButton ns_active" disabled type="button" value="3">3</button>
+                        <button class="ns_ratingButton ns_active" disabled type="button" value="2">2</button>
+                        <button class="ns_ratingButton ns_active" disabled type="button" value="1">1</button>
+                    </div>
                 </div>
+            </aside>
+        </div>
+        <aside class="ns_dayPanel">
+            <h2>7 Day Trip Plan</h2>
+            <p class="ns_dayIntro">Choose a day, then use the map to plan what you want to visit near the selected stadium.</p>
+            <div class="ns_dayButtons">
+                <button class="ns_dayButton ns_active" type="button" value="1">Day 1</button>
+                <button class="ns_dayButton" type="button" value="2">Day 2</button>
+                <button class="ns_dayButton" type="button" value="3">Day 3</button>
+                <button class="ns_dayButton" type="button" value="4">Day 4</button>
+                <button class="ns_dayButton" type="button" value="5">Day 5</button>
+                <button class="ns_dayButton" type="button" value="6">Day 6</button>
+                <button class="ns_dayButton" type="button" value="7">Day 7</button>
             </div>
         </aside>
     </section>

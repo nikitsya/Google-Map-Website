@@ -1,5 +1,6 @@
 import {loadStadiums} from "./js/data/locations.js"
 import {MapManager} from "./js/map/MapManager.js"
+import {DayPlanner} from "./js/planner/DayPlanner.js"
 
 /**
  * Starts the page after the Google Maps script has loaded.
@@ -13,6 +14,7 @@ export async function initialiseMapPage() {
     const cityButtons = document.querySelectorAll(".ns_cityButton")
     const categoryButtons = document.querySelectorAll(".ns_categoryButton")
     const ratingButtons = document.querySelectorAll(".ns_ratingButton")
+    const dayButtons = document.querySelectorAll(".ns_dayButton")
 
     const setActiveCityButton = cityIndex => {
         cityButtons.forEach(cityButton => {
@@ -46,9 +48,11 @@ export async function initialiseMapPage() {
         resetCategoryButtons()
         resetRatingButtons()
     })
+    const dayPlanner = new DayPlanner(dayButtons)
 
     // Build the Google Map and show all host cities first.
     mapManager.init()
+    dayPlanner.init()
 
     // --- Listeners ---
     headerIcon.addEventListener("click", () => {
