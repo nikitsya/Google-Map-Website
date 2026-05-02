@@ -11,33 +11,38 @@ const CAFE_MARKER_ICON = "images/markers/caffe.png"
  */
 export class MapManager {
 
-    /**
-     * Stores stadium data and prepares marker collections.
-     */
     constructor(stadiums) {
+        // Store all stadium data used by the map.
         this.stadiums = stadiums
+
+        // Keep the selected stadium index, or null before a city is chosen.
         this.activeStadiumIndex = null
 
+        // These Google Maps objects are created when the map is initialised.
         this.map = null
         this.placesService = null
         this.infoWindow = null
         this.bounds = null
 
+        // Keep every marker so it can be shown, hidden, or reused later.
         this.stadiumMarkers = []
         this.hotelMarkers = []
         this.cafeMarkers = []
+
+        // Remember Google Places IDs to stop duplicate hotel and cafe markers.
         this.hotelPlaceIds = new Set()
         this.cafePlaceIds = new Set()
+
+        // Remember which stadiums already loaded nearby places.
         this.loadedHotelStadiumIndexes = new Set()
         this.loadedCafeStadiumIndexes = new Set()
     }
 
-    /**
-     * Builds the map and prepares the Google Places service.
-     */
     init() {
+        // Do nothing until the Google Maps script has loaded.
         if (!window.google || !window.google.maps) return
 
+        // Build the map and prepare Google Places for nearby searches.
         this.map = new google.maps.Map(document.getElementById("ns_map"), {
             center: new google.maps.LatLng(this.stadiums[0].latitude, this.stadiums[0].longitude),
             mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -55,10 +60,8 @@ export class MapManager {
         })
     }
 
-    /**
-     * Creates one custom marker for each World Cup stadium.
-     */
     renderStadiumMarkers() {
+        // Create one main custom marker for each World Cup stadium.
         this.stadiums.forEach((stadium, index) => {
             const position = new google.maps.LatLng(stadium.latitude, stadium.longitude)
             const marker = new google.maps.Marker({
@@ -80,19 +83,19 @@ export class MapManager {
         })
     }
 
-    /**
-     * Loads and toggles nearby hotel and cafe markers for the selected stadium.
-     */
     updateNearbyMarkers() {
+        // Nearby places only appear after a stadium has been selected.
         if (this.activeStadiumIndex === null) return
 
         const zoom = this.map.getZoom()
 
+        // Load hotels and cafés only when the user is close enough to the stadium.
         if (zoom >= VISIBLE_ZOOM) {
             this.loadHotelMarkers(this.activeStadiumIndex)
             this.loadCafeMarkers(this.activeStadiumIndex)
         }
 
+        // Hide nearby markers again when the user zooms back out.
         this.hotelMarkers.forEach(({marker, stadiumIndex}) => {
             const shouldShowMarker = this.activeStadiumIndex === stadiumIndex && zoom >= VISIBLE_ZOOM
             marker.setMap(shouldShowMarker ? this.map : null)
@@ -103,10 +106,8 @@ export class MapManager {
         })
     }
 
-    /**
-     * Searches for hotels around one stadium and stores their markers.
-     */
     loadHotelMarkers(stadiumIndex) {
+        // Avoid requesting hotels for the same stadium more than once.
         if (this.loadedHotelStadiumIndexes.has(stadiumIndex)) return
 
         const stadium = this.stadiums[stadiumIndex]
@@ -124,16 +125,15 @@ export class MapManager {
                 this.renderHotelMarker(hotel, stadiumIndex)
             })
 
+            // Google Places returns extra results in pages.
             if (pagination && pagination.hasNextPage) {
                 setTimeout(() => pagination.nextPage(), 1000)
             }
         })
     }
 
-    /**
-     * Creates one hotel marker returned by Google Places.
-     */
     renderHotelMarker(hotel, stadiumIndex) {
+        // Skip places without a position and avoid duplicated markers.
         if (!hotel.geometry || !hotel.geometry.location || this.hotelPlaceIds.has(hotel.place_id)) return
 
         const marker = new google.maps.Marker({
@@ -150,6 +150,7 @@ export class MapManager {
         this.hotelMarkers.push({marker: marker, stadiumIndex: stadiumIndex})
 
         marker.addListener("click", () => {
+            // Reuse one info window instead of opening many at the same time.
             this.infoWindow.setContent(`
                 <strong>${hotel.name}</strong><br>
                 ${hotel.vicinity || "Hotel near the stadium"}
@@ -162,10 +163,8 @@ export class MapManager {
         this.updateNearbyMarkers()
     }
 
-    /**
-     * Searches for cafés around one stadium and stores their markers.
-     */
     loadCafeMarkers(stadiumIndex) {
+        // Avoid requesting cafés for the same stadium more than once.
         if (this.loadedCafeStadiumIndexes.has(stadiumIndex)) return
 
         const stadium = this.stadiums[stadiumIndex]
@@ -183,16 +182,15 @@ export class MapManager {
                 this.renderCafeMarker(cafe, stadiumIndex)
             })
 
+            // Google Places returns extra results in pages.
             if (pagination && pagination.hasNextPage) {
                 setTimeout(() => pagination.nextPage(), 1000)
             }
         })
     }
 
-    /**
-     * Creates one cafe marker returned by Google Places.
-     */
     renderCafeMarker(cafe, stadiumIndex) {
+        // Skip places without a position and avoid duplicated markers.
         if (!cafe.geometry || !cafe.geometry.location || this.cafePlaceIds.has(cafe.place_id)) return
         if (!cafe.types || !cafe.types.includes("cafe")) return
 
@@ -210,6 +208,7 @@ export class MapManager {
         this.cafeMarkers.push({marker: marker, stadiumIndex: stadiumIndex})
 
         marker.addListener("click", () => {
+            // Reuse one info window instead of opening many at the same time.
             this.infoWindow.setContent(`
                 <strong>${cafe.name}</strong><br>
                 ${cafe.vicinity || "Cafe near the stadium"}
@@ -222,17 +221,13 @@ export class MapManager {
         this.updateNearbyMarkers()
     }
 
-    /**
-     * Fits the map bounds around all stadium markers.
-     */
     showAllCities() {
+        // Fit the starting view around all stadium markers.
         this.map.fitBounds(this.bounds)
     }
 
-    /**
-     * Centres the map on the selected stadium and opens its info window.
-     */
     focusOnCity(index) {
+        // Centre the map on the selected stadium and use it as the active area.
         const selectedStadium = this.stadiums[index]
         const selectedMarker = this.stadiumMarkers[index]
 
