@@ -11,7 +11,7 @@ body {
 
 /* Main page layout */
 main {
-    width: 880px;
+    width: 910px;
     margin: 0 0 0 32px;
     padding: 24px 0 850px;
 }
@@ -23,8 +23,8 @@ section {
 /* Map area layout */
 .ns_mapSection {
     display: grid;
-    grid-template-columns: 776px 88px;
-    gap: 16px;
+    grid-template-columns: 776px 106px;
+    gap: 0;
     align-items: start;
 }
 
@@ -103,6 +103,10 @@ p, li {
 
 /* Category filters */
 .ns_categoryPanel {
+    height: 784px;
+    box-sizing: border-box;
+    padding: 12px;
+    background: #283249;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -245,13 +249,17 @@ ul {
 /* Tablet layout */
 @media (max-width: 950px) {
     main {
-        width: 700px;
+        width: 704px;
         margin: 0 auto;
         padding: 24px 0 680px;
     }
 
     .ns_mapSection {
-        grid-template-columns: 596px 88px;
+        grid-template-columns: 596px 108px;
+    }
+
+    .ns_categoryPanel {
+        height: 604px;
     }
 
     .ns_headerContent {
@@ -287,8 +295,8 @@ ul {
     }
 
     .ns_mapSection {
-        grid-template-columns: 254px 74px;
-        gap: 12px;
+        grid-template-columns: 254px 86px;
+        gap: 0;
     }
 
     .ns_headerContent {
@@ -331,6 +339,11 @@ ul {
         font-size: 10px;
     }
 
+    .ns_categoryPanel {
+        height: 262px;
+        padding: 10px;
+    }
+
     .ns_filterTitle {
         width: 66px;
     }
@@ -363,7 +376,11 @@ ul {
     }
 
     .ns_mapSection {
-        grid-template-columns: 214px 74px;
+        grid-template-columns: 214px 86px;
+    }
+
+    .ns_categoryPanel {
+        height: 222px;
     }
 
     .ns_headerContent {
