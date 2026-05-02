@@ -2,26 +2,35 @@
     box-sizing: border-box;
 }
 
-:root {
-    --bottomBackgroundHeight: 56.25vw;
-}
-
 body {
     margin: 0;
     font-family: Arial, sans-serif;
     color: #1f2933;
     min-height: 100vh;
-    background-color: #1a4c6c;
-    background-image: url("../images/world-cup-trophy-fifa-football.jpg");
+    position: relative;
+    isolation: isolate;
+    overflow-x: hidden;
+    background-color: #071f14;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("../images/background.jpg");
     background-repeat: no-repeat;
-    background-position: center bottom;
-    background-size: 100% auto;
+    background-position: center;
+    background-size: cover;
+    filter: blur(4px);
+    transform: scale(1.06);
+    z-index: -2;
+    pointer-events: none;
 }
 
 main {
     width: min(100% - 2rem, 900px);
     margin: 0 auto;
-    padding: 1.5rem 0 calc(var(--bottomBackgroundHeight) + 2rem);
+    padding: 1.5rem 0 3rem;
 }
 
 section {
