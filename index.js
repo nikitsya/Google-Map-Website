@@ -7,6 +7,7 @@ export function initialiseMapPage() {
 
     mapManager.init()
 
+    // Focus the map on the selected city's stadium
     cityButtons.forEach(button => {
         button.addEventListener("click", () => {
             const cityIndex = Number(button.value)
