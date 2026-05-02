@@ -227,6 +227,11 @@ p, li {
     line-height: 1.4;
 }
 
+.ns_dayIntro strong {
+    color: #f4c542;
+    font-size: 16px;
+}
+
 .ns_dayButtons {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
