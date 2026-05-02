@@ -1,6 +1,7 @@
 const MARKER_SIZE = 42
 const SEARCH_RADIUS = 6000
 const VISIBLE_ZOOM = 13
+const PLACE_RATINGS = [5, 4, 3, 2, 1]
 
 const STADIUM_MARKER_ICON = "images/markers/stadium.png"
 const HOTEL_MARKER_ICON = "images/markers/hotel.png"
@@ -12,8 +13,7 @@ const RESTAURANT_MARKER_ICON = "images/markers/restaurant.png"
  */
 export class MapManager {
 
-    constructor(stadiums, onStadiumSelected = () => {
-    }) {
+    constructor(stadiums, onStadiumSelected = () => {}) {
         // Store all stadium data used by the map.
         this.stadiums = stadiums
         this.onStadiumSelected = onStadiumSelected
@@ -21,6 +21,7 @@ export class MapManager {
         // Keep the selected stadium index, or null before a city is chosen.
         this.activeStadiumIndex = null
         this.activePlaceCategory = null
+        this.activeRatings = new Set(PLACE_RATINGS)
 
         // These Google Maps objects are created when the map is initialised.
         this.map = null
@@ -112,18 +113,31 @@ export class MapManager {
         }
 
         // Hide nearby markers again when the user zooms back out.
-        this.hotelMarkers.forEach(({marker, stadiumIndex}) => {
-            const shouldShowMarker = this.activePlaceCategory === "hotel" && this.activeStadiumIndex === stadiumIndex && zoom >= VISIBLE_ZOOM
+        this.hotelMarkers.forEach(({marker, stadiumIndex, rating}) => {
+            const shouldShowMarker = this.shouldShowNearbyMarker("hotel", stadiumIndex, rating, zoom)
             marker.setMap(shouldShowMarker ? this.map : null)
         })
-        this.cafeMarkers.forEach(({marker, stadiumIndex}) => {
-            const shouldShowMarker = this.activePlaceCategory === "cafe" && this.activeStadiumIndex === stadiumIndex && zoom >= VISIBLE_ZOOM
+        this.cafeMarkers.forEach(({marker, stadiumIndex, rating}) => {
+            const shouldShowMarker = this.shouldShowNearbyMarker("cafe", stadiumIndex, rating, zoom)
             marker.setMap(shouldShowMarker ? this.map : null)
         })
-        this.restaurantMarkers.forEach(({marker, stadiumIndex}) => {
-            const shouldShowMarker = this.activePlaceCategory === "restaurant" && this.activeStadiumIndex === stadiumIndex && zoom >= VISIBLE_ZOOM
+        this.restaurantMarkers.forEach(({marker, stadiumIndex, rating}) => {
+            const shouldShowMarker = this.shouldShowNearbyMarker("restaurant", stadiumIndex, rating, zoom)
             marker.setMap(shouldShowMarker ? this.map : null)
         })
+    }
+
+    shouldShowNearbyMarker(category, stadiumIndex, rating, zoom) {
+        return this.activePlaceCategory === category &&
+            this.activeStadiumIndex === stadiumIndex &&
+            zoom >= VISIBLE_ZOOM &&
+            this.matchesRatingFilter(rating)
+    }
+
+    matchesRatingFilter(rating) {
+        // Places without a rating stay visible only when every rating is selected.
+        if (!rating) return this.activeRatings.size === PLACE_RATINGS.length
+        return this.activeRatings.has(rating)
     }
 
     loadHotelMarkers(stadiumIndex) {
@@ -167,7 +181,11 @@ export class MapManager {
         })
 
         this.hotelPlaceIds.add(hotel.place_id)
-        this.hotelMarkers.push({marker: marker, stadiumIndex: stadiumIndex})
+        this.hotelMarkers.push({
+            marker: marker,
+            rating: this.getPlaceRating(hotel),
+            stadiumIndex: stadiumIndex
+        })
 
         marker.addListener("click", () => {
             // Reuse one info window instead of opening many at the same time.
@@ -225,7 +243,11 @@ export class MapManager {
         })
 
         this.cafePlaceIds.add(cafe.place_id)
-        this.cafeMarkers.push({marker: marker, stadiumIndex: stadiumIndex})
+        this.cafeMarkers.push({
+            marker: marker,
+            rating: this.getPlaceRating(cafe),
+            stadiumIndex: stadiumIndex
+        })
 
         marker.addListener("click", () => {
             // Reuse one info window instead of opening many at the same time.
@@ -286,7 +308,11 @@ export class MapManager {
         })
 
         this.restaurantPlaceIds.add(restaurant.place_id)
-        this.restaurantMarkers.push({marker: marker, stadiumIndex: stadiumIndex})
+        this.restaurantMarkers.push({
+            marker: marker,
+            rating: this.getPlaceRating(restaurant),
+            stadiumIndex: stadiumIndex
+        })
 
         marker.addListener("click", () => {
             // Reuse one info window instead of opening many at the same time.
@@ -318,6 +344,12 @@ export class MapManager {
         `
     }
 
+    getPlaceRating(place) {
+        if (!place.rating) return null
+        // The closest whole number.
+        return Math.round(place.rating)
+    }
+
     showAllCities() {
         // Fit the starting view around all stadium markers.
         this.map.fitBounds(this.bounds)
@@ -328,6 +360,12 @@ export class MapManager {
         if (this.activeStadiumIndex === null) return
 
         this.activePlaceCategory = category
+        this.updateNearbyMarkers()
+    }
+
+    setActiveRatings(ratings) {
+        // Store every rating button that is still switched on.
+        this.activeRatings = new Set(ratings)
         this.updateNearbyMarkers()
     }
 
@@ -346,6 +384,7 @@ export class MapManager {
         ))
         this.activeStadiumIndex = index
         this.activePlaceCategory = null
+        this.activeRatings = new Set(PLACE_RATINGS)
         this.map.setZoom(VISIBLE_ZOOM)
         this.infoWindow.setContent(selectedStadium.content)
         this.infoWindow.open({

@@ -148,6 +148,46 @@ p, li {
     opacity: 0.38;
 }
 
+/* Rating filters */
+.ns_ratingFilter {
+    width: 76px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.ns_ratingButtons {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+}
+
+.ns_ratingButton {
+    width: 76px;
+    height: 76px;
+    border: 0;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #17364d;
+    font-size: 24px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ns_ratingButton.ns_active {
+    background: #ba1f33;
+    color: #ffffff;
+}
+
+.ns_ratingButton:disabled {
+    background: #d1d5db;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
 /* Google map */
 #ns_map {
     width: 776px;
@@ -280,6 +320,16 @@ ul {
         width: 66px;
         height: 66px;
         font-size: 10px;
+    }
+
+    .ns_ratingFilter {
+        width: 66px;
+    }
+
+    .ns_ratingButton {
+        width: 66px;
+        height: 66px;
+        font-size: 22px;
     }
 
     .ns_categoryButton img {
