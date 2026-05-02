@@ -1,11 +1,14 @@
+/* Global reset */
 * {
     box-sizing: border-box;
 }
 
+/* Shared page values */
 :root {
     --bottomBackgroundHeight: 56.25vw;
 }
 
+/* Page background */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -18,6 +21,7 @@ body {
     background-color: #1a4c6c;
 }
 
+/* Main page layout */
 main {
     width: min(100% - 2rem, 900px);
     margin: 0 auto;
@@ -28,6 +32,7 @@ section {
     margin-bottom: 1.5rem;
 }
 
+/* Map area layout */
 .ns_mapSection {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 220px;
@@ -35,6 +40,7 @@ section {
     align-items: start;
 }
 
+/* City navigation */
 .ns_cityPanel {
     display: flex;
     flex-direction: column;
@@ -58,16 +64,16 @@ section {
     background: #8f1525;
 }
 
-h1,
-h2 {
+/* Text spacing */
+h1, h2 {
     margin: 0 0 1rem;
 }
 
-p,
-li {
+p, li {
     line-height: 1.6;
 }
 
+/* Header */
 .ns_pageHeader {
     width: 100%;
     background: #f4c542;
@@ -106,6 +112,7 @@ li {
     font-size: 0.92rem;
 }
 
+/* Google map */
 #ns_map {
     width: 100%;
     height: 65vh;
@@ -114,11 +121,13 @@ li {
     background: #dfe7ef;
 }
 
+/* List spacing */
 ul {
     margin: 0;
     padding-left: 1.2rem;
 }
 
+/* Mobile layout */
 @media (max-width: 600px) {
     main {
         width: min(100% - 1.25rem, 900px);
