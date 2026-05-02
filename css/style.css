@@ -229,6 +229,38 @@ p, li {
     font-weight: 700;
 }
 
+.ns_stadiumInfo {
+    width: 320px;
+    font-size: 14px;
+}
+
+.ns_stadiumInfo strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 18px;
+}
+
+.ns_stadiumInfo span {
+    display: block;
+    margin-bottom: 10px;
+    color: #ba1f33;
+    font-weight: 700;
+}
+
+.ns_stadiumInfo p {
+    margin: 0 0 10px;
+    line-height: 1.4;
+}
+
+.ns_stadiumInfo ul {
+    padding-left: 18px;
+}
+
+.ns_stadiumInfo li {
+    margin-bottom: 6px;
+    line-height: 1.35;
+}
+
 /* List spacing */
 ul {
     margin: 0;
