@@ -48,6 +48,7 @@ section {
     width: 52px;
     height: 52px;
     object-fit: contain;
+    cursor: pointer;
 }
 
 .ns_headerText {
@@ -169,7 +170,7 @@ p, li {
     width: 76px;
     height: 76px;
     border: 0;
-    background: url("../images/ratings/starGrey.png") center / contain;
+    background: url("../images/ratings/starGrey.png") center / contain no-repeat;
     color: #17364d;
     font-size: 24px;
     font-weight: 700;

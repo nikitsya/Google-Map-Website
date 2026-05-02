@@ -2,10 +2,14 @@ import {loadStadiums} from "./js/data/locations.js"
 import {MapManager} from "./js/map/MapManager.js"
 
 /**
- * Initialises the Google Map and connects city buttons to stadium markers.
+ * Starts the page after the Google Maps script has loaded.
  */
 export async function initialiseMapPage() {
+    // Load stadium data from the JSON file before the map is created.
     const stadiums = await loadStadiums()
+
+    // Store the main page controls.
+    const headerIcon = document.querySelector(".ns_headerIcon")
     const cityButtons = document.querySelectorAll(".ns_cityButton")
     const categoryButtons = document.querySelectorAll(".ns_categoryButton")
     const ratingButtons = document.querySelectorAll(".ns_ratingButton")
@@ -36,13 +40,37 @@ export async function initialiseMapPage() {
             .map(ratingButton => Number(ratingButton.value))
     }
 
+    // Create the map controller.
     const mapManager = new MapManager(stadiums, cityIndex => {
         setActiveCityButton(cityIndex)
         resetCategoryButtons()
         resetRatingButtons()
     })
 
+    // Build the Google Map and show all host cities first.
     mapManager.init()
+
+    // --- Listeners ---
+    headerIcon.addEventListener("click", () => {
+        // Reset city buttons.
+        cityButtons.forEach(cityButton => {
+            cityButton.classList.remove("ns_active")
+        })
+
+        // Disable category buttons.
+        categoryButtons.forEach(categoryButton => {
+            categoryButton.classList.remove("ns_active")
+            categoryButton.disabled = true
+        })
+
+        // Disable rating buttons
+        ratingButtons.forEach(ratingButton => {
+            ratingButton.classList.add("ns_active")
+            ratingButton.disabled = true
+        })
+
+        mapManager.showAllCities()
+    })
 
     cityButtons.forEach(button => {
         button.addEventListener("click", () => {

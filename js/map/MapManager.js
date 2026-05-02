@@ -140,6 +140,19 @@ export class MapManager {
         return this.activeRatings.has(rating)
     }
 
+    hideNearbyMarkers() {
+        // Remove all nearby hotel, cafe, and restaurant markers from the map.
+        this.hotelMarkers.forEach(({marker}) => {
+            marker.setMap(null)
+        })
+        this.cafeMarkers.forEach(({marker}) => {
+            marker.setMap(null)
+        })
+        this.restaurantMarkers.forEach(({marker}) => {
+            marker.setMap(null)
+        })
+    }
+
     loadHotelMarkers(stadiumIndex) {
         // Avoid requesting hotels for the same stadium more than once.
         if (this.loadedHotelStadiumIndexes.has(stadiumIndex)) return
@@ -351,7 +364,13 @@ export class MapManager {
     }
 
     showAllCities() {
-        // Fit the starting view around all stadium markers.
+        if (!this.map || !this.bounds) return
+
+        this.activeStadiumIndex = null
+        this.activePlaceCategory = null
+        this.activeRatings = new Set(PLACE_RATINGS)
+        this.hideNearbyMarkers()
+        if (this.infoWindow) this.infoWindow.close()
         this.map.fitBounds(this.bounds)
     }
 
