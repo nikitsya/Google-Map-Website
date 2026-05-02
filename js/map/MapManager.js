@@ -11,6 +11,9 @@ const CAFE_MARKER_ICON = "images/markers/caffe.png"
  */
 export class MapManager {
 
+    /**
+     * Stores stadium data and prepares marker collections.
+     */
     constructor(stadiums) {
         this.stadiums = stadiums
         this.activeStadiumIndex = null
@@ -52,6 +55,9 @@ export class MapManager {
         })
     }
 
+    /**
+     * Creates one custom marker for each World Cup stadium.
+     */
     renderStadiumMarkers() {
         this.stadiums.forEach((stadium, index) => {
             const position = new google.maps.LatLng(stadium.latitude, stadium.longitude)
@@ -124,6 +130,9 @@ export class MapManager {
         })
     }
 
+    /**
+     * Creates one hotel marker returned by Google Places.
+     */
     renderHotelMarker(hotel, stadiumIndex) {
         if (!hotel.geometry || !hotel.geometry.location || this.hotelPlaceIds.has(hotel.place_id)) return
 
@@ -180,6 +189,9 @@ export class MapManager {
         })
     }
 
+    /**
+     * Creates one cafe marker returned by Google Places.
+     */
     renderCafeMarker(cafe, stadiumIndex) {
         if (!cafe.geometry || !cafe.geometry.location || this.cafePlaceIds.has(cafe.place_id)) return
         if (!cafe.types || !cafe.types.includes("cafe")) return
@@ -210,6 +222,9 @@ export class MapManager {
         this.updateNearbyMarkers()
     }
 
+    /**
+     * Fits the map bounds around all stadium markers.
+     */
     showAllCities() {
         this.map.fitBounds(this.bounds)
     }
