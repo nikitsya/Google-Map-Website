@@ -170,6 +170,12 @@ p, li {
     margin-bottom: 8px;
 }
 
+.ns_placeRating {
+    margin: 6px 0;
+    color: #17364d;
+    font-weight: 700;
+}
+
 /* List spacing */
 ul {
     margin: 0;

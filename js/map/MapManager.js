@@ -304,12 +304,16 @@ export class MapManager {
         const photoUrl = place.photos && place.photos.length > 0
             ? place.photos[0].getUrl({maxWidth: 260, maxHeight: 160})
             : null
+        const ratingText = place.rating
+            ? `<div class="ns_placeRating">Rating: ${place.rating} / 5</div>`
+            : null
 
         return `
             <div class="ns_placeInfo">
                 ${photoUrl ? `<img alt="${place.name}" class="ns_placePhoto" src="${photoUrl}">` : ""}
-                <strong>${place.name}</strong><br>
-                ${place.vicinity || fallbackText}
+                <strong>${place.name}</strong>
+                ${ratingText}
+                <div>${place.vicinity || fallbackText}</div>
             </div>
         `
     }
