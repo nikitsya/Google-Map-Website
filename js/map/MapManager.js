@@ -3,6 +3,7 @@ const SEARCH_RADIUS = 6000
 const VISIBLE_ZOOM = 13
 const PLACE_RATINGS = [5, 4, 3, 2, 1]
 
+// Custom marker images used instead of the default Google Maps pins.
 const STADIUM_MARKER_ICON = "images/markers/stadium.png"
 const HOTEL_MARKER_ICON = "images/markers/hotel.png"
 const CAFE_MARKER_ICON = "images/markers/caffe.png"
@@ -18,7 +19,7 @@ export class MapManager {
         this.stadiums = stadiums
         this.onStadiumSelected = onStadiumSelected
 
-        // Keep the selected stadium index, or null before a city is chosen.
+        // Track what the user has selected in the page controls.
         this.activeStadiumIndex = null
         this.activePlaceCategory = null
         this.activeRatings = new Set(PLACE_RATINGS)
@@ -50,7 +51,7 @@ export class MapManager {
         // Do nothing until the Google Maps script has loaded.
         if (!window.google || !window.google.maps) return
 
-        // Build the map and prepare Google Places for nearby searches.
+        // Build the map and prepare the Places service for hotel, cafe, and restaurant searches.
         this.map = new google.maps.Map(document.getElementById("ns_map"), {
             center: new google.maps.LatLng(this.stadiums[0].latitude, this.stadiums[0].longitude),
             mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -63,6 +64,7 @@ export class MapManager {
         this.renderStadiumMarkers()
         this.showAllCities()
 
+        // Recheck nearby marker visibility whenever the user zooms in or out.
         this.map.addListener("zoom_changed", () => {
             this.updateNearbyMarkers()
         })
@@ -85,6 +87,7 @@ export class MapManager {
             this.stadiumMarkers.push(marker)
             this.bounds.extend(position)
 
+            // Clicking a stadium marker focuses the map on that stadium.
             marker.addListener("click", () => {
                 this.focusOnCity(index)
             })
@@ -128,6 +131,7 @@ export class MapManager {
     }
 
     shouldShowNearbyMarker(category, stadiumIndex, rating, zoom) {
+        // A nearby marker is visible only when it matches the current category, city, zoom, and rating filters.
         return this.activePlaceCategory === category &&
             this.activeStadiumIndex === stadiumIndex &&
             zoom >= VISIBLE_ZOOM &&
@@ -135,7 +139,7 @@ export class MapManager {
     }
 
     matchesRatingFilter(rating) {
-        // Places without a rating stay visible only when every rating is selected.
+        // Places without a rating stay visible only when the user has not narrowed the rating filter.
         if (!rating) return this.activeRatings.size === PLACE_RATINGS.length
         return this.activeRatings.has(rating)
     }
@@ -153,14 +157,15 @@ export class MapManager {
         })
     }
 
+    // --- Hotels ---
+
     loadHotelMarkers(stadiumIndex) {
         // Avoid requesting hotels for the same stadium more than once.
         if (this.loadedHotelStadiumIndexes.has(stadiumIndex)) return
+        this.loadedHotelStadiumIndexes.add(stadiumIndex)
 
         const stadium = this.stadiums[stadiumIndex]
         const location = new google.maps.LatLng(stadium.latitude, stadium.longitude)
-
-        this.loadedHotelStadiumIndexes.add(stadiumIndex)
 
         this.placesService.nearbySearch({
             location: location,
@@ -211,14 +216,15 @@ export class MapManager {
         this.updateNearbyMarkers()
     }
 
+    // --- Cafes ---
+
     loadCafeMarkers(stadiumIndex) {
         // Avoid requesting cafés for the same stadium more than once.
         if (this.loadedCafeStadiumIndexes.has(stadiumIndex)) return
+        this.loadedCafeStadiumIndexes.add(stadiumIndex)
 
         const stadium = this.stadiums[stadiumIndex]
         const location = new google.maps.LatLng(stadium.latitude, stadium.longitude)
-
-        this.loadedCafeStadiumIndexes.add(stadiumIndex)
 
         this.placesService.nearbySearch({
             location: location,
@@ -241,10 +247,9 @@ export class MapManager {
     renderCafeMarker(cafe, stadiumIndex) {
         // Skip places without a position and avoid duplicated markers.
         if (!cafe.geometry || !cafe.geometry.location || this.cafePlaceIds.has(cafe.place_id)) return
-        if (
-            cafe.types.includes("restaurant") ||
-            cafe.types.includes("dining")
-        ) return
+
+        // Keep cafés separate from restaurants so the cafe filter stays focused on light food and drinks.
+        if (cafe.types.includes("restaurant") || cafe.types.includes("dining")) return
 
         const marker = new google.maps.Marker({
             icon: {
@@ -273,14 +278,16 @@ export class MapManager {
         this.updateNearbyMarkers()
     }
 
+    // --- Restaurants ---
+
     loadRestaurantMarkers(stadiumIndex) {
         // Avoid requesting restaurants for the same stadium more than once.
         if (this.loadedRestaurantStadiumIndexes.has(stadiumIndex)) return
+        this.loadedRestaurantStadiumIndexes.add(stadiumIndex)
 
         const stadium = this.stadiums[stadiumIndex]
         const location = new google.maps.LatLng(stadium.latitude, stadium.longitude)
 
-        this.loadedRestaurantStadiumIndexes.add(stadiumIndex)
         this.placesService.nearbySearch({
             keyword: "restaurant dining",
             location: location,
@@ -338,6 +345,8 @@ export class MapManager {
         this.updateNearbyMarkers()
     }
 
+    // --- Place information ---
+
     buildPlaceContent(place, fallbackText) {
         // Add the first Google Places photo when one is available.
         const photoUrl = place.photos && place.photos.length > 0
@@ -347,6 +356,7 @@ export class MapManager {
             ? `<div class="ns_placeRating">Rating: ${place.rating} / 5</div>`
             : null
 
+        // Build the small popup shown when a hotel, cafe, or restaurant marker is clicked.
         return `
             <div class="ns_placeInfo">
                 ${photoUrl ? `<img alt="${place.name}" class="ns_placePhoto" src="${photoUrl}">` : ""}
@@ -364,6 +374,7 @@ export class MapManager {
     }
 
     showAllCities() {
+        // This is the starting map state: no selected city and no nearby markers.
         if (!this.map || !this.bounds) return
 
         this.activeStadiumIndex = null
@@ -383,19 +394,17 @@ export class MapManager {
     }
 
     setActiveRatings(ratings) {
-        // Store every rating button that is still switched on.
         this.activeRatings = new Set(ratings)
         this.updateNearbyMarkers()
     }
 
     focusOnCity(index) {
-        // Centre the map on the selected stadium and use it as the active area.
+        // Centre the map on the selected stadium and use it as the active search area.
         const selectedStadium = this.stadiums[index]
         const selectedMarker = this.stadiumMarkers[index]
 
-        if (!selectedStadium || !selectedMarker) {
-            return
-        }
+        // Stop if the index does not match a real stadium or marker.
+        if (!selectedStadium || !selectedMarker) return
 
         this.map.setCenter(new google.maps.LatLng(
             selectedStadium.latitude,
