@@ -10,7 +10,7 @@ body {
     position: relative;
     isolation: isolate;
     overflow-x: hidden;
-    background-color: #071f14;
+    background-color: #61752d;
 }
 
 body::before {
