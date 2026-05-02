@@ -12,7 +12,8 @@ const RESTAURANT_MARKER_ICON = "images/markers/restaurant.png"
  */
 export class MapManager {
 
-    constructor(stadiums, onStadiumSelected = () => {}) {
+    constructor(stadiums, onStadiumSelected = () => {
+    }) {
         // Store all stadium data used by the map.
         this.stadiums = stadiums
         this.onStadiumSelected = onStadiumSelected
