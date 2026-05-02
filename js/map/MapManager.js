@@ -6,6 +6,9 @@ const STADIUM_MARKER_ICON = "images/markers/stadium.png"
 const HOTEL_MARKER_ICON = "images/markers/hotel.png"
 const CAFE_MARKER_ICON = "images/markers/caffe.png"
 
+/**
+ * Manages the Google Map, stadium markers, and nearby place markers.
+ */
 export class MapManager {
 
     constructor(stadiums) {
@@ -26,6 +29,9 @@ export class MapManager {
         this.loadedCafeStadiumIndexes = new Set()
     }
 
+    /**
+     * Builds the map and prepares the Google Places service.
+     */
     init() {
         if (!window.google || !window.google.maps) return
 
@@ -68,6 +74,9 @@ export class MapManager {
         })
     }
 
+    /**
+     * Loads and toggles nearby hotel and cafe markers for the selected stadium.
+     */
     updateNearbyMarkers() {
         if (this.activeStadiumIndex === null) return
 
@@ -88,6 +97,9 @@ export class MapManager {
         })
     }
 
+    /**
+     * Searches for hotels around one stadium and stores their markers.
+     */
     loadHotelMarkers(stadiumIndex) {
         if (this.loadedHotelStadiumIndexes.has(stadiumIndex)) return
 
@@ -141,6 +153,9 @@ export class MapManager {
         this.updateNearbyMarkers()
     }
 
+    /**
+     * Searches for cafés around one stadium and stores their markers.
+     */
     loadCafeMarkers(stadiumIndex) {
         if (this.loadedCafeStadiumIndexes.has(stadiumIndex)) return
 
@@ -199,6 +214,9 @@ export class MapManager {
         this.map.fitBounds(this.bounds)
     }
 
+    /**
+     * Centres the map on the selected stadium and opens its info window.
+     */
     focusOnCity(index) {
         const selectedStadium = this.stadiums[index]
         const selectedMarker = this.stadiumMarkers[index]
