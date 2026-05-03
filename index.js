@@ -14,7 +14,9 @@ export async function initialiseMapPage() {
     const cityButtons = document.querySelectorAll(".ns_cityButton")
     const categoryButtons = document.querySelectorAll(".ns_categoryButton")
     const ratingButtons = document.querySelectorAll(".ns_ratingButton")
-    const dayButtons = document.querySelectorAll(".ns_dayButton")
+    const routeBuilder = document.querySelector(".ns_routeBuilder")
+    const routeSlots = document.querySelectorAll(".ns_routeSlot")
+    const routeAddButton = document.querySelector(".ns_routeAddButton")
 
     const setActiveCityButton = cityIndex => {
         cityButtons.forEach(cityButton => {
@@ -48,7 +50,7 @@ export async function initialiseMapPage() {
         resetCategoryButtons()
         resetRatingButtons()
     })
-    const dayPlanner = new DayPlanner(dayButtons)
+    const dayPlanner = new DayPlanner(routeBuilder, routeSlots, routeAddButton)
 
     // Build the Google Map and show all host cities first.
     mapManager.init()

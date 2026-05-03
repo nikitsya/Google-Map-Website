@@ -232,27 +232,50 @@ p, li {
     font-size: 16px;
 }
 
-.ns_dayButtons {
+/* Day route builder */
+.ns_routeBuilder {
+    width: 100%;
+    max-width: 520px;
+    height: 430px;
+    margin-top: 24px;
+    position: relative;
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    margin-bottom: 16px;
+    grid-template-columns: repeat(4, 96px);
+    grid-template-rows: repeat(4, 76px);
+    gap: 30px 28px;
 }
 
-.ns_dayButton {
-    height: 42px;
-    border: 0;
-    border-radius: 8px;
-    background: #d7e6f4;
+.ns_routeSlot,
+.ns_routeAddButton {
+    position: relative;
+    width: 96px;
+    height: 76px;
+    border: 2px solid #f4c542;
+    border-radius: 18px;
+    background: #f8fbff;
     color: #17364d;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
+    z-index: 1;
 }
 
-.ns_dayButton.ns_active {
+.ns_routeAddButton {
     background: #ba1f33;
     color: #ffffff;
+    font-size: 44px;
+}
+
+.ns_routeLine {
+    content: "";
+    position: absolute;
+    background: #f4c542;
+    z-index: 0;
+}
+
+.ns_routeSlot[hidden],
+.ns_routeAddButton[hidden] {
+    display: none;
 }
 
 /* Google map */
@@ -359,10 +382,6 @@ ul {
         color: #ffffff;
     }
 
-    .ns_dayButtons {
-        grid-template-columns: repeat(4, 1fr);
-    }
-
     .ns_categoryPanel {
         height: 604px;
     }
@@ -456,10 +475,6 @@ ul {
     .ns_dayPanel {
         width: 340px;
         padding: 14px;
-    }
-
-    .ns_dayButtons {
-        grid-template-columns: repeat(2, 1fr);
     }
 
     .ns_dayPanel h2 {
