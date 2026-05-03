@@ -2,10 +2,6 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-image: url("../images/world-cup-trophy-fifa-football.jpg");
-    background-repeat: no-repeat;
-    background-position: center bottom;
-    background-size: 100% auto;
     background-color: #0f286e;
 }
 
@@ -13,7 +9,7 @@ body {
 main {
     width: calc(100% - 64px);
     margin: 0 32px;
-    padding: 24px 0 850px;
+    padding: 24px 0 40px;
 }
 
 section {
@@ -373,7 +369,7 @@ ul {
     main {
         width: 704px;
         margin: 0 auto;
-        padding: 24px 0 680px;
+        padding: 24px 0 40px;
     }
 
     .ns_mapSection {
@@ -415,7 +411,7 @@ ul {
     main {
         width: 340px;
         margin: 0 auto;
-        padding: 20px 0 390px;
+        padding: 20px 0 32px;
     }
 
     section {
