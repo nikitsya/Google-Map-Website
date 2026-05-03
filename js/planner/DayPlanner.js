@@ -17,6 +17,7 @@ export class DayPlanner {
         this.routeSlots = routeSlots
         this.routeAddButton = routeAddButton
         this.visibleSlots = 1
+        this.activeSlot = null
     }
 
     init() {
@@ -24,7 +25,33 @@ export class DayPlanner {
             this.showNextSlot()
         })
 
+        this.routeSlots.forEach(slot => {
+            slot.addEventListener("click", () => {
+                this.selectSlot(slot)
+            })
+        })
+
         this.renderRoute()
+    }
+
+    selectSlot(slot) {
+        // Click the same slot again to stop selecting a map place for it.
+        this.activeSlot = this.activeSlot === slot ? null : slot
+        this.routeSlots.forEach(routeSlot => {
+            routeSlot.classList.toggle("ns_active", routeSlot === this.activeSlot)
+        })
+    }
+
+    addPlace(place) {
+        // Add a clicked map place only after the user has selected a route slot.
+        if (!this.activeSlot) return false
+
+        this.activeSlot.textContent = place.name
+        this.activeSlot.classList.add("ns_filled")
+        this.activeSlot.classList.remove("ns_active")
+        this.activeSlot = null
+
+        return true
     }
 
     showNextSlot() {

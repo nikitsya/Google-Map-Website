@@ -44,13 +44,16 @@ export async function initialiseMapPage() {
             .map(ratingButton => Number(ratingButton.value))
     }
 
+    const dayPlanner = new DayPlanner(routeBuilder, routeSlots, routeAddButton)
+
     // Create the map controller.
     const mapManager = new MapManager(stadiums, cityIndex => {
         setActiveCityButton(cityIndex)
         resetCategoryButtons()
         resetRatingButtons()
+    }, place => {
+        return dayPlanner.addPlace(place)
     })
-    const dayPlanner = new DayPlanner(routeBuilder, routeSlots, routeAddButton)
 
     // Build the Google Map and show all host cities first.
     mapManager.init()

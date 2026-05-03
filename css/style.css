@@ -248,6 +248,7 @@ p, li {
 .ns_routeSlot,
 .ns_routeAddButton {
     position: relative;
+    box-sizing: border-box;
     width: 96px;
     height: 76px;
     border: 2px solid #f4c542;
@@ -264,6 +265,17 @@ p, li {
     background: #ba1f33;
     color: #ffffff;
     font-size: 44px;
+}
+
+.ns_routeSlot.ns_active {
+    background: #f4c542;
+}
+
+.ns_routeSlot.ns_filled {
+    overflow: hidden;
+    padding: 8px;
+    font-size: 12px;
+    line-height: 1.2;
 }
 
 .ns_routeLine {

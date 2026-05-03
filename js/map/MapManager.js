@@ -14,10 +14,11 @@ const RESTAURANT_MARKER_ICON = "images/markers/restaurant.png"
  */
 export class MapManager {
 
-    constructor(stadiums, onStadiumSelected = () => {}) {
+    constructor(stadiums, onStadiumSelected = () => {}, onPlaceSelected = () => false) {
         // Store all stadium data used by the map.
         this.stadiums = stadiums
         this.onStadiumSelected = onStadiumSelected
+        this.onPlaceSelected = onPlaceSelected
 
         // Track what the user has selected in the page controls.
         this.activeStadiumIndex = null
@@ -68,6 +69,31 @@ export class MapManager {
         this.map.addListener("zoom_changed", () => {
             this.updateNearbyMarkers()
         })
+
+        // Let the trip planner use ordinary Google Maps places, not only custom markers.
+        this.map.addListener("click", mapEvent => {
+            this.handleMapPlaceClick(mapEvent)
+        })
+    }
+
+    handleMapPlaceClick(mapEvent) {
+        // Empty map areas have no Google place ID, so there is no place name to add.
+        if (!mapEvent.placeId) return
+
+        mapEvent.stop()
+        this.placesService.getDetails({
+            fields: ["name", "geometry", "formatted_address", "vicinity", "rating", "photos"],
+            placeId: mapEvent.placeId
+        }, (place) => {
+            if (!place) return
+
+            this.addPlaceToTripPlan(place)
+            this.infoWindow.setContent(this.buildPlaceContent(place, "Selected place on the map"))
+            this.infoWindow.setPosition(place.geometry ? place.geometry.location : mapEvent.latLng)
+            this.infoWindow.open({
+                map: this.map
+            })
+        })
     }
 
     renderStadiumMarkers() {
@@ -89,6 +115,7 @@ export class MapManager {
 
             // Clicking a stadium marker focuses the map on that stadium.
             marker.addListener("click", () => {
+                this.addPlaceToTripPlan(stadium)
                 this.focusOnCity(index)
             })
         })
@@ -206,6 +233,8 @@ export class MapManager {
         })
 
         marker.addListener("click", () => {
+            this.addPlaceToTripPlan(hotel)
+
             // Reuse one info window instead of opening many at the same time.
             this.infoWindow.setContent(this.buildPlaceContent(hotel, "Hotel near the stadium"))
             this.infoWindow.open({
@@ -268,6 +297,8 @@ export class MapManager {
         })
 
         marker.addListener("click", () => {
+            this.addPlaceToTripPlan(cafe)
+
             // Reuse one info window instead of opening many at the same time.
             this.infoWindow.setContent(this.buildPlaceContent(cafe, "Cafe near the stadium"))
             this.infoWindow.open({
@@ -335,6 +366,8 @@ export class MapManager {
         })
 
         marker.addListener("click", () => {
+            this.addPlaceToTripPlan(restaurant)
+
             // Reuse one info window instead of opening many at the same time.
             this.infoWindow.setContent(this.buildPlaceContent(restaurant, "Restaurant near the stadium"))
             this.infoWindow.open({
@@ -347,14 +380,20 @@ export class MapManager {
 
     // --- Place information ---
 
+    addPlaceToTripPlan(place) {
+        this.onPlaceSelected({
+            name: place.name
+        })
+    }
+
     buildPlaceContent(place, fallbackText) {
         // Add the first Google Places photo when one is available.
         const photoUrl = place.photos && place.photos.length > 0
             ? place.photos[0].getUrl({maxWidth: 260, maxHeight: 160})
-            : null
+            : ""
         const ratingText = place.rating
             ? `<div class="ns_placeRating">Rating: ${place.rating} / 5</div>`
-            : null
+            : ""
 
         // Build the small popup shown when a hotel, cafe, or restaurant marker is clicked.
         return `
