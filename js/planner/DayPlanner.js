@@ -1,21 +1,11 @@
 const ROUTE_POSITIONS = [
-    {column: 1, row: 1, x: 48, y: 38},
-    {column: 2, row: 1, x: 172, y: 38},
-    {column: 3, row: 1, x: 296, y: 38},
-    {column: 4, row: 1, x: 420, y: 38},
-    {column: 4, row: 2, x: 420, y: 144},
-    {column: 3, row: 2, x: 296, y: 144},
-    {column: 2, row: 2, x: 172, y: 144},
-    {column: 1, row: 2, x: 48, y: 144},
-    {column: 1, row: 3, x: 48, y: 250},
-    {column: 2, row: 3, x: 172, y: 250},
-    {column: 3, row: 3, x: 296, y: 250},
-    {column: 4, row: 3, x: 420, y: 250},
-    {column: 4, row: 4, x: 420, y: 356},
-    {column: 3, row: 4, x: 296, y: 356},
-    {column: 2, row: 4, x: 172, y: 356},
-    {column: 1, row: 4, x: 48, y: 356}
+    {column: 1, row: 1}, {column: 2, row: 1}, {column: 3, row: 1}, {column: 4, row: 1},
+    {column: 4, row: 2}, {column: 3, row: 2}, {column: 2, row: 2}, {column: 1, row: 2},
+    {column: 1, row: 3}, {column: 2, row: 3}, {column: 3, row: 3}, {column: 4, row: 3},
+    {column: 4, row: 4}, {column: 3, row: 4}, {column: 2, row: 4}, {column: 1, row: 4}
 ]
+
+const ROUTE_LINE_SIZE = 4
 
 /**
  * Handles the one-day trip planner controls.
@@ -23,7 +13,6 @@ const ROUTE_POSITIONS = [
 export class DayPlanner {
 
     constructor(routeBuilder, routeSlots, routeAddButton) {
-        // Store the route controls used by the planner panel.
         this.routeBuilder = routeBuilder
         this.routeSlots = routeSlots
         this.routeAddButton = routeAddButton
@@ -31,10 +20,10 @@ export class DayPlanner {
     }
 
     init() {
-        // The plus button reveals the next prepared place slot.
         this.routeAddButton.addEventListener("click", () => {
             this.showNextSlot()
         })
+
         this.renderRoute()
     }
 
@@ -89,24 +78,31 @@ export class DayPlanner {
 
     createLine(startIndex, endIndex) {
         // Create one straight line between two neighbouring route slots.
-        const start = ROUTE_POSITIONS[startIndex]
-        const end = ROUTE_POSITIONS[endIndex]
+        const start = this.getSlotCentre(this.routeSlots[startIndex])
+        const end = this.getSlotCentre(this.routeSlots[endIndex])
         const line = document.createElement("span")
 
         line.className = "ns_routeLine"
 
         if (start.y === end.y) {
             line.style.left = `${Math.min(start.x, end.x)}px`
-            line.style.top = `${start.y}px`
+            line.style.top = `${start.y - ROUTE_LINE_SIZE / 2}px`
             line.style.width = `${Math.abs(end.x - start.x)}px`
-            line.style.height = "4px"
+            line.style.height = `${ROUTE_LINE_SIZE}px`
             return line
         }
 
-        line.style.left = `${start.x}px`
+        line.style.left = `${start.x - ROUTE_LINE_SIZE / 2}px`
         line.style.top = `${Math.min(start.y, end.y)}px`
-        line.style.width = "4px"
+        line.style.width = `${ROUTE_LINE_SIZE}px`
         line.style.height = `${Math.abs(end.y - start.y)}px`
         return line
+    }
+
+    getSlotCentre(slot) {
+        return {
+            x: slot.offsetLeft + slot.offsetWidth / 2,
+            y: slot.offsetTop + slot.offsetHeight / 2
+        }
     }
 }
