@@ -1,6 +1,5 @@
 const MARKER_SIZE = 42
 const SEARCH_RADIUS = 10000
-const CITY_SEARCH_RADIUS = 50000
 const VISIBLE_ZOOM = 11
 const PLACE_RATINGS = [5, 4, 3, 2, 1]
 
@@ -606,7 +605,7 @@ export class MapManager {
 
             request.location = new google.maps.LatLng(selectedStadium.latitude, selectedStadium.longitude)
             request.query = `${searchQuery} ${selectedStadium.city} Mexico`
-            request.radius = CITY_SEARCH_RADIUS
+            request.radius = SEARCH_RADIUS
             delete request.bounds
         }
 
