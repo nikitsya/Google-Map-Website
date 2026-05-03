@@ -8,6 +8,8 @@ const STADIUM_MARKER_ICON = "images/markers/stadium.png"
 const HOTEL_MARKER_ICON = "images/markers/hotel.png"
 const CAFE_MARKER_ICON = "images/markers/caffe.png"
 const RESTAURANT_MARKER_ICON = "images/markers/restaurant.png"
+const ATTRACTION_MARKER_ICON = "images/markers/attractions.png"
+const BAR_MARKER_ICON = "images/markers/bar.png"
 
 /**
  * Manages the Google Map, stadium markers, and nearby place markers.
@@ -36,23 +38,29 @@ export class MapManager {
         this.hotelMarkers = []
         this.cafeMarkers = []
         this.restaurantMarkers = []
+        this.attractionMarkers = []
+        this.barMarkers = []
 
-        // Remember Google Places IDs to stop duplicate hotel, cafe, and restaurant markers.
+        // Remember Google Places IDs to stop duplicate nearby place markers.
         this.hotelPlaceIds = new Set()
         this.cafePlaceIds = new Set()
         this.restaurantPlaceIds = new Set()
+        this.attractionPlaceIds = new Set()
+        this.barPlaceIds = new Set()
 
         // Remember which stadiums already loaded nearby places.
         this.loadedHotelStadiumIndexes = new Set()
         this.loadedCafeStadiumIndexes = new Set()
         this.loadedRestaurantStadiumIndexes = new Set()
+        this.loadedAttractionStadiumIndexes = new Set()
+        this.loadedBarStadiumIndexes = new Set()
     }
 
     init() {
         // Do nothing until the Google Maps script has loaded.
         if (!window.google || !window.google.maps) return
 
-        // Build the map and prepare the Places service for hotel, cafe, and restaurant searches.
+        // Build the map and prepare the Places service for nearby place searches.
         this.map = new google.maps.Map(document.getElementById("ns_map"), {
             center: new google.maps.LatLng(this.stadiums[0].latitude, this.stadiums[0].longitude),
             mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -140,6 +148,14 @@ export class MapManager {
             if (this.activePlaceCategory === "restaurant") {
                 this.loadRestaurantMarkers(this.activeStadiumIndex)
             }
+
+            if (this.activePlaceCategory === "attraction") {
+                this.loadAttractionMarkers(this.activeStadiumIndex)
+            }
+
+            if (this.activePlaceCategory === "bar") {
+                this.loadBarMarkers(this.activeStadiumIndex)
+            }
         }
 
         // Hide nearby markers again when the user zooms back out.
@@ -153,6 +169,14 @@ export class MapManager {
         })
         this.restaurantMarkers.forEach(({marker, stadiumIndex, rating}) => {
             const shouldShowMarker = this.shouldShowNearbyMarker("restaurant", stadiumIndex, rating, zoom)
+            marker.setMap(shouldShowMarker ? this.map : null)
+        })
+        this.attractionMarkers.forEach(({marker, stadiumIndex, rating}) => {
+            const shouldShowMarker = this.shouldShowNearbyMarker("attraction", stadiumIndex, rating, zoom)
+            marker.setMap(shouldShowMarker ? this.map : null)
+        })
+        this.barMarkers.forEach(({marker, stadiumIndex, rating}) => {
+            const shouldShowMarker = this.shouldShowNearbyMarker("bar", stadiumIndex, rating, zoom)
             marker.setMap(shouldShowMarker ? this.map : null)
         })
     }
@@ -172,7 +196,7 @@ export class MapManager {
     }
 
     hideNearbyMarkers() {
-        // Remove all nearby hotel, cafe, and restaurant markers from the map.
+        // Remove all nearby place markers from the map.
         this.hotelMarkers.forEach(({marker}) => {
             marker.setMap(null)
         })
@@ -180,6 +204,12 @@ export class MapManager {
             marker.setMap(null)
         })
         this.restaurantMarkers.forEach(({marker}) => {
+            marker.setMap(null)
+        })
+        this.attractionMarkers.forEach(({marker}) => {
+            marker.setMap(null)
+        })
+        this.barMarkers.forEach(({marker}) => {
             marker.setMap(null)
         })
     }
@@ -378,6 +408,129 @@ export class MapManager {
         this.updateNearbyMarkers()
     }
 
+    // --- Attractions ---
+
+    loadAttractionMarkers(stadiumIndex) {
+        // Avoid requesting attractions for the same stadium more than once.
+        if (this.loadedAttractionStadiumIndexes.has(stadiumIndex)) return
+        this.loadedAttractionStadiumIndexes.add(stadiumIndex)
+
+        const stadium = this.stadiums[stadiumIndex]
+        const location = new google.maps.LatLng(stadium.latitude, stadium.longitude)
+
+        this.placesService.nearbySearch({
+            location: location,
+            radius: SEARCH_RADIUS,
+            type: "tourist_attraction"
+        }, (attractions, status, pagination) => {
+            if (!attractions) return
+
+            attractions.forEach(attraction => {
+                this.renderAttractionMarker(attraction, stadiumIndex)
+            })
+
+            // Google Places returns extra results in pages.
+            if (pagination && pagination.hasNextPage) {
+                setTimeout(() => pagination.nextPage(), 1000)
+            }
+        })
+    }
+
+    renderAttractionMarker(attraction, stadiumIndex) {
+        // Skip places without a position and avoid duplicated markers.
+        if (!attraction.geometry || !attraction.geometry.location || this.attractionPlaceIds.has(attraction.place_id)) return
+
+        const marker = new google.maps.Marker({
+            icon: {
+                url: ATTRACTION_MARKER_ICON,
+                scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)
+            },
+            position: attraction.geometry.location,
+            title: attraction.name
+        })
+
+        this.attractionPlaceIds.add(attraction.place_id)
+        this.attractionMarkers.push({
+            marker: marker,
+            rating: this.getPlaceRating(attraction),
+            stadiumIndex: stadiumIndex
+        })
+
+        marker.addListener("click", () => {
+            this.addPlaceToTripPlan(attraction)
+
+            // Reuse one info window instead of opening many at the same time.
+            this.infoWindow.setContent(this.buildPlaceContent(attraction, "Attraction near the stadium"))
+            this.infoWindow.open({
+                anchor: marker,
+                map: this.map
+            })
+        })
+        this.updateNearbyMarkers()
+    }
+
+    // --- Bars ---
+
+    loadBarMarkers(stadiumIndex) {
+        // Avoid requesting bars for the same stadium more than once.
+        if (this.loadedBarStadiumIndexes.has(stadiumIndex)) return
+        this.loadedBarStadiumIndexes.add(stadiumIndex)
+
+        const stadium = this.stadiums[stadiumIndex]
+        const location = new google.maps.LatLng(stadium.latitude, stadium.longitude)
+
+        this.placesService.nearbySearch({
+            keyword: "bar pub",
+            location: location,
+            radius: SEARCH_RADIUS,
+            type: "bar"
+        }, (bars, status, pagination) => {
+            if (!bars) return
+
+            bars.forEach(bar => {
+                this.renderBarMarker(bar, stadiumIndex)
+            })
+
+            // Google Places returns extra results in pages.
+            if (pagination && pagination.hasNextPage) {
+                setTimeout(() => pagination.nextPage(), 1000)
+            }
+        })
+    }
+
+    renderBarMarker(bar, stadiumIndex) {
+        // Skip places without a position and avoid duplicated markers.
+        if (!bar.geometry || !bar.geometry.location || this.barPlaceIds.has(bar.place_id)) return
+
+        const marker = new google.maps.Marker({
+            icon: {
+                url: BAR_MARKER_ICON,
+                scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)
+            },
+            position: bar.geometry.location,
+            title: bar.name
+        })
+
+        this.barPlaceIds.add(bar.place_id)
+        this.barMarkers.push({
+            marker: marker,
+            rating: this.getPlaceRating(bar),
+            stadiumIndex: stadiumIndex
+        })
+
+        marker.addListener("click", () => {
+            this.addPlaceToTripPlan(bar)
+
+            // Reuse one info window instead of opening many at the same time.
+            this.infoWindow.setContent(this.buildPlaceContent(bar, "Bar near the stadium"))
+            this.infoWindow.open({
+                anchor: marker,
+                map: this.map
+            })
+        })
+        this.updateNearbyMarkers()
+    }
+
     // --- Place information ---
 
     addPlaceToTripPlan(place) {
@@ -395,7 +548,7 @@ export class MapManager {
             ? `<div class="ns_placeRating">Rating: ${place.rating} / 5</div>`
             : ""
 
-        // Build the small popup shown when a hotel, cafe, or restaurant marker is clicked.
+        // Build the small popup shown when a nearby place marker is clicked.
         return `
             <div class="ns_placeInfo">
                 ${photoUrl ? `<img alt="${place.name}" class="ns_placePhoto" src="${photoUrl}">` : ""}
