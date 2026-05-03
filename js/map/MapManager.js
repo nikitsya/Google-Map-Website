@@ -1,6 +1,7 @@
 const MARKER_SIZE = 42
-const SEARCH_RADIUS = 6000
-const VISIBLE_ZOOM = 13
+const SEARCH_RADIUS = 10000
+const CITY_SEARCH_RADIUS = 50000
+const VISIBLE_ZOOM = 11
 const PLACE_RATINGS = [5, 4, 3, 2, 1]
 
 // Custom marker images used instead of the default Google Maps pins.
@@ -588,6 +589,42 @@ export class MapManager {
     setActiveRatings(ratings) {
         this.activeRatings = new Set(ratings)
         this.updateNearbyMarkers()
+    }
+
+    searchPlace(query) {
+        const searchQuery = query.trim()
+
+        if (!searchQuery || !this.placesService) return
+
+        const request = {
+            bounds: this.bounds,
+            query: `${searchQuery} Mexico`
+        }
+
+        if (this.activeStadiumIndex !== null) {
+            const selectedStadium = this.stadiums[this.activeStadiumIndex]
+
+            request.location = new google.maps.LatLng(selectedStadium.latitude, selectedStadium.longitude)
+            request.query = `${searchQuery} ${selectedStadium.city} Mexico`
+            request.radius = CITY_SEARCH_RADIUS
+            delete request.bounds
+        }
+
+        this.placesService.textSearch(request, places => {
+            if (!places || !places[0]) return
+
+            const place = places[0]
+
+            if (!place.geometry || !place.geometry.location) return
+
+            this.map.setCenter(place.geometry.location)
+            this.map.setZoom(VISIBLE_ZOOM)
+            this.infoWindow.setContent(this.buildPlaceContent(place, "Searched place on the map"))
+            this.infoWindow.setPosition(place.geometry.location)
+            this.infoWindow.open({
+                map: this.map
+            })
+        })
     }
 
     focusOnCity(index) {

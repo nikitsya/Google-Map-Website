@@ -68,13 +68,51 @@ section {
     font-size: 15px;
 }
 
-/* City navigation */
-.ns_cityControls {
+/* Place search */
+.ns_searchForm {
+    width: 390px;
+    margin-left: auto;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+}
+
+.ns_searchInput {
+    width: 326px;
+    height: 42px;
+    border: 0;
+    border-radius: 10px 0 0 10px;
+    padding: 0 14px;
+    color: #17364d;
+    font-size: 14px;
+}
+
+.ns_searchButton {
+    width: 54px;
+    height: 42px;
+    border: 0;
+    border-radius: 0 10px 10px 0;
+    background: #2c2c2c;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.ns_searchButton img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+/* City navigation */
+.ns_cityControls {
+    width: 882px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
     gap: 12px;
-    margin-left: auto;
 }
 
 .ns_cityButton {
@@ -370,6 +408,14 @@ ul {
         width: 430px;
     }
 
+    .ns_searchForm {
+        width: 300px;
+    }
+
+    .ns_searchInput {
+        width: 246px;
+    }
+
     .ns_mapSection {
         grid-template-columns: 704px 1fr;
     }
@@ -412,8 +458,15 @@ ul {
 
     .ns_cityControls {
         width: 700px;
-        justify-content: flex-start;
+    }
+
+    .ns_searchForm {
+        width: 700px;
         margin-left: 0;
+    }
+
+    .ns_searchInput {
+        width: 646px;
     }
 
     #ns_map {
@@ -458,6 +511,14 @@ ul {
         width: 286px;
     }
 
+    .ns_searchForm {
+        width: 340px;
+    }
+
+    .ns_searchInput {
+        width: 286px;
+    }
+
     .ns_pageHeader h1 {
         font-size: 26px;
     }
@@ -469,6 +530,7 @@ ul {
     .ns_cityControls {
         width: 340px;
         gap: 8px;
+        margin-bottom: 14px;
     }
 
     .ns_cityButton {
@@ -579,6 +641,14 @@ ul {
     }
 
     .ns_headerText {
+        width: 246px;
+    }
+
+    .ns_searchForm {
+        width: 300px;
+    }
+
+    .ns_searchInput {
         width: 246px;
     }
 

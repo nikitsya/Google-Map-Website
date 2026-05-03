@@ -15,14 +15,22 @@
             <h1>World Cup 2026 Mexico Guide</h1>
             <p>Explore Mexico City, Guadalajara, and Monterrey as host city destinations for World Cup 2026 travel.</p>
         </div>
-        <nav class="ns_cityControls">
-            <button class="ns_cityButton" type="button" value="0">Mexico City</button>
-            <button class="ns_cityButton" type="button" value="1">Guadalajara</button>
-            <button class="ns_cityButton" type="button" value="2">Monterrey</button>
-        </nav>
+        <form class="ns_searchForm">
+            <label>
+                <input class="ns_searchInput" placeholder="Search a place on the map" type="search">
+            </label>
+            <button class="ns_searchButton" title="Search" type="submit">
+                <img alt="search" src="images/search.png">
+            </button>
+        </form>
     </div>
 </header>
 <main>
+    <nav class="ns_cityControls">
+        <button class="ns_cityButton" type="button" value="0">Mexico City</button>
+        <button class="ns_cityButton" type="button" value="1">Guadalajara</button>
+        <button class="ns_cityButton" type="button" value="2">Monterrey</button>
+    </nav>
     <section class="ns_mapSection">
         <div class="ns_mapTools">
             <div id="ns_map"></div>

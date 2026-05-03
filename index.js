@@ -11,6 +11,8 @@ export async function initialiseMapPage() {
 
     // Store the main page controls.
     const headerIcon = document.querySelector(".ns_headerIcon")
+    const searchForm = document.querySelector(".ns_searchForm")
+    const searchInput = document.querySelector(".ns_searchInput")
     const cityButtons = document.querySelectorAll(".ns_cityButton")
     const categoryButtons = document.querySelectorAll(".ns_categoryButton")
     const ratingButtons = document.querySelectorAll(".ns_ratingButton")
@@ -60,6 +62,11 @@ export async function initialiseMapPage() {
     dayPlanner.init()
 
     // --- Listeners ---
+    searchForm.addEventListener("submit", event => {
+        event.preventDefault()
+        mapManager.searchPlace(searchInput.value)
+    })
+
     headerIcon.addEventListener("click", () => {
         // Reset city buttons.
         cityButtons.forEach(cityButton => {
