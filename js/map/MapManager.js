@@ -26,6 +26,7 @@ const CAFE_MARKER_ICON = "images/markers/caffe.png"
 const RESTAURANT_MARKER_ICON = "images/markers/restaurant.png"
 const ATTRACTION_MARKER_ICON = "images/markers/attractions.png"
 const BAR_MARKER_ICON = "images/markers/bar.png"
+const PARKING_MARKER_ICON = "images/markers/parking.png"
 
 /**
  * Manages the Google Map, stadium markers, and nearby place markers.
@@ -62,6 +63,7 @@ export class MapManager {
         this.restaurantMarkers = []
         this.attractionMarkers = []
         this.barMarkers = []
+        this.parkingMarkers = []
 
         // Remember Google Places IDs to stop duplicate nearby place markers.
         this.hotelPlaceIds = new Set()
@@ -69,6 +71,7 @@ export class MapManager {
         this.restaurantPlaceIds = new Set()
         this.attractionPlaceIds = new Set()
         this.barPlaceIds = new Set()
+        this.parkingPlaceIds = new Set()
 
         // Remember which stadiums already loaded nearby places.
         this.loadedHotelStadiumIndexes = new Set()
@@ -76,6 +79,7 @@ export class MapManager {
         this.loadedRestaurantStadiumIndexes = new Set()
         this.loadedAttractionStadiumIndexes = new Set()
         this.loadedBarStadiumIndexes = new Set()
+        this.loadedParkingStadiumIndexes = new Set()
     }
 
     init() {
@@ -184,6 +188,10 @@ export class MapManager {
             if (this.activePlaceCategory === "bar") {
                 this.loadBarMarkers(this.activeStadiumIndex)
             }
+
+            if (this.activePlaceCategory === "parking") {
+                this.loadParkingMarkers(this.activeStadiumIndex)
+            }
         }
 
         // Hide nearby markers again when the user zooms back out.
@@ -205,6 +213,10 @@ export class MapManager {
         })
         this.barMarkers.forEach(({marker, stadiumIndex, rating}) => {
             const shouldShowMarker = this.shouldShowNearbyMarker("bar", stadiumIndex, rating, zoom)
+            marker.setMap(shouldShowMarker ? this.map : null)
+        })
+        this.parkingMarkers.forEach(({marker, stadiumIndex, rating}) => {
+            const shouldShowMarker = this.shouldShowNearbyMarker("parking", stadiumIndex, rating, zoom)
             marker.setMap(shouldShowMarker ? this.map : null)
         })
     }
@@ -238,6 +250,9 @@ export class MapManager {
             marker.setMap(null)
         })
         this.barMarkers.forEach(({marker}) => {
+            marker.setMap(null)
+        })
+        this.parkingMarkers.forEach(({marker}) => {
             marker.setMap(null)
         })
     }
@@ -551,6 +566,67 @@ export class MapManager {
 
             // Reuse one info window instead of opening many at the same time.
             this.infoWindow.setContent(await this.buildPlaceContent(bar, "Bar near the stadium"))
+            this.infoWindow.open({
+                anchor: marker,
+                map: this.map
+            })
+        })
+        this.updateNearbyMarkers()
+    }
+
+    // --- Parking ---
+
+    loadParkingMarkers(stadiumIndex) {
+        // Avoid requesting car park for the same stadium more than once.
+        if (this.loadedParkingStadiumIndexes.has(stadiumIndex)) return
+        this.loadedParkingStadiumIndexes.add(stadiumIndex)
+
+        const stadium = this.stadiums[stadiumIndex]
+        const location = new google.maps.LatLng(stadium.latitude, stadium.longitude)
+
+        this.placesService.nearbySearch({
+            location: location,
+            radius: SEARCH_RADIUS,
+            type: "parking"
+        }, (parkingLots, status, pagination) => {
+            if (!parkingLots) return
+
+            parkingLots.forEach(parking => {
+                this.renderParkingMarker(parking, stadiumIndex)
+            })
+
+            // Google Places returns extra results in pages.
+            if (pagination && pagination.hasNextPage) {
+                setTimeout(() => pagination.nextPage(), 1000)
+            }
+        })
+    }
+
+    renderParkingMarker(parking, stadiumIndex) {
+        // Skip places without a position and avoid duplicated markers.
+        if (!parking.geometry || !parking.geometry.location || this.parkingPlaceIds.has(parking.place_id)) return
+
+        const marker = new google.maps.Marker({
+            icon: {
+                url: PARKING_MARKER_ICON,
+                scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)
+            },
+            position: parking.geometry.location,
+            title: parking.name
+        })
+
+        this.parkingPlaceIds.add(parking.place_id)
+        this.parkingMarkers.push({
+            marker: marker,
+            rating: this.getPlaceRating(parking),
+            stadiumIndex: stadiumIndex
+        })
+
+        marker.addListener("click", async () => {
+            this.addPlaceToTripPlan(parking)
+
+            // Reuse one info window instead of opening many at the same time.
+            this.infoWindow.setContent(await this.buildPlaceContent(parking, "Parking near the stadium"))
             this.infoWindow.open({
                 anchor: marker,
                 map: this.map
