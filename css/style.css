@@ -345,6 +345,14 @@ p, li {
     box-sizing: border-box;
     width: 96px;
     height: 76px;
+    z-index: 1;
+}
+
+.ns_routeSlotAction,
+.ns_routeAddButton {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
     border: 2px solid #f4c542;
     border-radius: 18px;
     background: #f8fbff;
@@ -352,7 +360,15 @@ p, li {
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    z-index: 1;
+}
+
+.ns_routeSlotAction {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0 10px;
+    text-align: center;
 }
 
 .ns_routeAddButton {
@@ -361,15 +377,41 @@ p, li {
     font-size: 44px;
 }
 
-.ns_routeSlot.ns_active {
+.ns_routeSlot.ns_active .ns_routeSlotAction {
     background: #f4c542;
 }
 
-.ns_routeSlot.ns_filled {
+.ns_routeSlot.ns_filled .ns_routeSlotAction {
     overflow: hidden;
     padding: 8px;
     font-size: 12px;
     line-height: 1.2;
+}
+
+.ns_routeDeleteButton {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    background: #ba1f33;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+    z-index: 2;
+}
+
+.ns_routeDeleteButton:hover,
+.ns_routeDeleteButton:focus {
+    background: #8f1726;
 }
 
 .ns_routeLine {
@@ -807,12 +849,24 @@ ul {
     .ns_routeAddButton {
         width: 66px;
         height: 54px;
+    }
+
+    .ns_routeSlotAction,
+    .ns_routeAddButton {
         border-radius: 12px;
         font-size: 12px;
     }
 
     .ns_routeAddButton {
         font-size: 32px;
+    }
+
+    .ns_routeDeleteButton {
+        top: -7px;
+        right: -7px;
+        width: 18px;
+        height: 18px;
+        font-size: 13px;
     }
 
     .ns_routeScroll {
@@ -884,6 +938,10 @@ ul {
     .ns_routeAddButton {
         width: 60px;
         height: 50px;
+    }
+
+    .ns_routeSlotAction,
+    .ns_routeAddButton {
         font-size: 11px;
     }
 

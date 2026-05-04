@@ -25,10 +25,20 @@ export class DayPlanner {
             this.showNextSlot()
         })
 
-        this.routeSlots.forEach(slot => {
-            slot.addEventListener("click", () => {
+        this.routeSlots.forEach((slot, index) => {
+            const slotAction = slot.querySelector(".ns_routeSlotAction")
+            const deleteButton = slot.querySelector(".ns_routeDeleteButton")
+
+            slotAction.addEventListener("click", () => {
                 this.selectSlot(slot)
             })
+
+            if (deleteButton) {
+                deleteButton.addEventListener("click", event => {
+                    event.stopPropagation()
+                    this.deleteSlot(index)
+                })
+            }
         })
 
         this.renderRoute()
@@ -46,12 +56,36 @@ export class DayPlanner {
         // Add a clicked map place only after the user has selected a route slot.
         if (!this.activeSlot) return false
 
-        this.activeSlot.textContent = place.name
+        this.setSlotLabel(this.activeSlot, place.name)
         this.activeSlot.classList.add("ns_filled")
         this.activeSlot.classList.remove("ns_active")
         this.activeSlot = null
 
         return true
+    }
+
+    deleteSlot(index) {
+        if (index === 0 || index >= this.visibleSlots) return
+
+        let shiftIndex = index
+        while (shiftIndex < this.visibleSlots - 1) {
+            const targetSlot = this.routeSlots[shiftIndex]
+            const sourceSlot = this.routeSlots[shiftIndex + 1]
+
+            if (sourceSlot.classList.contains("ns_filled")) {
+                this.setSlotLabel(targetSlot, sourceSlot.querySelector(".ns_routeSlotLabel").textContent)
+                targetSlot.classList.add("ns_filled")
+            } else {
+                this.resetSlot(targetSlot, shiftIndex)
+            }
+
+            targetSlot.classList.remove("ns_active")
+            shiftIndex += 1
+        }
+
+        this.resetSlot(this.routeSlots[this.visibleSlots - 1], this.visibleSlots - 1)
+        this.visibleSlots -= 1
+        this.renderRoute()
     }
 
     showNextSlot() {
@@ -131,5 +165,15 @@ export class DayPlanner {
             x: slot.offsetLeft + slot.offsetWidth / 2,
             y: slot.offsetTop + slot.offsetHeight / 2
         }
+    }
+
+    setSlotLabel(slot, label) {
+        slot.querySelector(".ns_routeSlotLabel").textContent = label
+    }
+
+    resetSlot(slot, index) {
+        const slotLabel = index === 0 ? "Start" : `Place ${index}`
+        this.setSlotLabel(slot, slotLabel)
+        slot.classList.remove("ns_active", "ns_filled")
     }
 }
