@@ -54,12 +54,12 @@ An interactive travel guide web app built for tourists visiting Mexico during th
 
 ### 📍 Nearby Places (Google Places API)
 Filter and explore places around each stadium:
-- 🏨 Hotels
-- 🍽️ Restaurants
-- ☕ Cafes
-- 🏛️ Attractions
-- 🍺 Bars
-- 🅿️ Parking
+- Hotels
+- Restaurants
+- Cafes
+- Attractions
+- Bars
+- Parking
 
 ### ⭐ Rating Filter
 Filter nearby places by star rating (1–5) with toggle buttons.
