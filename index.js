@@ -13,6 +13,8 @@ export async function initialiseMapPage() {
     const headerIcon = document.querySelector(".ns_headerIcon")
     const searchForm = document.querySelector(".ns_searchForm")
     const searchInput = document.querySelector(".ns_searchInput")
+    const searchButton = document.querySelector(".ns_searchButton")
+    const searchError = document.querySelector(".ns_searchError")
     const cityButtons = document.querySelectorAll(".ns_cityButton")
     const categoryButtons = document.querySelectorAll(".ns_categoryButton")
     const ratingButtons = document.querySelectorAll(".ns_ratingButton")
@@ -46,6 +48,20 @@ export async function initialiseMapPage() {
             .map(ratingButton => Number(ratingButton.value))
     }
 
+    const showSearchError = message => {
+        searchError.textContent = message
+        searchError.hidden = false
+        searchInput.classList.add("ns_inputError")
+        searchButton.classList.add("ns_inputError")
+    }
+
+    const clearSearchError = () => {
+        searchError.textContent = ""
+        searchError.hidden = true
+        searchInput.classList.remove("ns_inputError")
+        searchButton.classList.remove("ns_inputError")
+    }
+
     const dayPlanner = new DayPlanner(routeBuilder, routeSlots, routeAddButton)
 
     // Create the map controller.
@@ -64,7 +80,14 @@ export async function initialiseMapPage() {
     // --- Listeners ---
     searchForm.addEventListener("submit", event => {
         event.preventDefault()
-        mapManager.searchPlace(searchInput.value)
+        clearSearchError()
+
+        if (!searchInput.value.trim()) {
+            showSearchError("Enter a place name before searching.")
+            return
+        }
+
+        mapManager.searchPlace(searchInput.value, showSearchError)
     })
 
     headerIcon.addEventListener("click", () => {

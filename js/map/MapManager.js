@@ -590,12 +590,15 @@ export class MapManager {
         this.updateNearbyMarkers()
     }
 
-    searchPlace(query) {
+    searchPlace(query, showSearchError = () => {}) {
         const searchQuery = query.trim()
 
-        if (!searchQuery || !this.placesService) return
+        if (!searchQuery || !this.placesService) {
+            showSearchError("Enter a place name before searching.")
+            return
+        }
 
-        const request = {
+        let request = {
             bounds: this.bounds,
             query: `${searchQuery} Mexico`
         }
@@ -603,18 +606,25 @@ export class MapManager {
         if (this.activeStadiumIndex !== null) {
             const selectedStadium = this.stadiums[this.activeStadiumIndex]
 
-            request.location = new google.maps.LatLng(selectedStadium.latitude, selectedStadium.longitude)
-            request.query = `${searchQuery} ${selectedStadium.city} Mexico`
-            request.radius = SEARCH_RADIUS
-            delete request.bounds
+            request = {
+                location: new google.maps.LatLng(selectedStadium.latitude, selectedStadium.longitude),
+                query: `${searchQuery} ${selectedStadium.city} Mexico`,
+                radius: SEARCH_RADIUS
+            }
         }
 
         this.placesService.textSearch(request, places => {
-            if (!places || !places[0]) return
+            if (!places || !places[0]) {
+                showSearchError("No matching place was found in the Mexican host cities.")
+                return
+            }
 
             const place = places[0]
 
-            if (!place.geometry || !place.geometry.location) return
+            if (!place.geometry || !place.geometry.location) {
+                showSearchError("This place has no map location.")
+                return
+            }
 
             this.map.setCenter(place.geometry.location)
             this.map.setZoom(VISIBLE_ZOOM)

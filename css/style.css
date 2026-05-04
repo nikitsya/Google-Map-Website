@@ -74,6 +74,7 @@ section {
     margin-left: auto;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .ns_searchInput {
@@ -84,6 +85,10 @@ section {
     padding: 0 14px;
     color: #17364d;
     font-size: 14px;
+}
+
+.ns_inputError {
+    outline: 2px solid #ba1f33;
 }
 
 .ns_searchButton {
@@ -103,6 +108,14 @@ section {
     width: 30px;
     height: 30px;
     object-fit: contain;
+}
+
+.ns_searchError {
+    width: 100%;
+    margin: 6px 0 0;
+    color: #8d1022;
+    font-size: 13px;
+    font-weight: 700;
 }
 
 /* City navigation */
