@@ -5,6 +5,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>World Cup 2026 Mexico Guide</title>
     <link href="icon.svg" rel="icon" type="image/svg+xml">
+    <link href="manifest.json" rel="manifest">
+    <meta name="theme-color" content="#17364d">
     <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
@@ -201,6 +203,9 @@
     </section>
 </main>
 <script>
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js")
+    }
     window.initialiseGoogleMapPage = async () => {
         const {initialiseMapPage} = await import("./index.js")
         await initialiseMapPage()
