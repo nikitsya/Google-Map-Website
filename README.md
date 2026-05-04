@@ -1,40 +1,185 @@
-# World Cup 2026 Mexico Guide
+# 🌍 World Cup 2026 Mexico Guide
 
-This project is a Google Maps based travel guide for the 2026 World Cup host cities in Mexico: Mexico City, Guadalajara,
-and Monterrey.
+An interactive travel guide web app built for tourists visiting Mexico during the **FIFA World Cup 2026**. The app helps users explore Mexico City, Guadalajara, and Monterrey — the three Mexican host cities — with an interactive Google Map, one-day trip planning, live weather, currency conversion, and more.
 
-## CA3 Requirements Checklist
+---
 
-| Requirement                                                                                                                                                                                                                                                                                                              | Max marks | Current status |
-|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------:|----------------|
-| Provide the user with an excellent visual appearance. The layout, colour scheme, images, and typography must all work well together, so that your app is appealing to a user. The layout, colour scheme, images, and typography must be consistent across the various pages in your app.                                 |        15 | ✅              |
-| Provide the user with an excellent user experience. It must be easy and intuitive for a user to navigate your app and to find information when using your app. Form input error handling on your app must clearly state where and error occurs and what the error is. Error handling must be consistent across your app. |        10 | ✅              |
-| You should use a hamburger menu on mobile phones. You should use a horizontal bar menu on tablets and computers                                                                                                                                                                                                          |         5 | ✅              |
-| Images and other content should scale well and display appropriately on each device. The user should not be expected to scroll horizontally on the screen. Do not use any tables on mobile phones or tablets.                                                                                                            |         5 | ✅              |
-| Read a JSON object from a JSON file and combine this with the results of a **[google.maps.place object](https://developers.google.com/maps/documentation/places/web-service/details#Place)**                                                                                                                             |        10 | ✅              |
-| Make use of two appropriate APIs, such as language translation and currency conversion. These must be integrated into your app in a way that makes them useful to the user of the app. DO NOT just add them as a feature in isolation to the other content of your app.                                                  |        10 | ✅              |
-| Provide a visually pleasing display of the various tourist-related content                                                                                                                                                                                                                                               |         5 | ✅              |
-| Show various useful tourist information on the map                                                                                                                                                                                                                                                                       |         5 | ✅              |
-| Allow users to filter content                                                                                                                                                                                                                                                                                            |         5 | ✅              |
-| Allow users to show/hide Points of Interest on the map                                                                                                                                                                                                                                                                   |         5 | ✅              |
-| Include advanced custom content. The custom content must include images                                                                                                                                                                                                                                                  |         5 | ✅              |
-| Include custom markers                                                                                                                                                                                                                                                                                                   |         5 | ✅              |
-| Allow the user to find a route between various locations                                                                                                                                                                                                                                                                 |         5 |  ✅            |
-| Allow the user to select multiple stops along a route                                                                                                                                                                                                                                                                    |         5 | ✅              |
-| Be downloadable onto a computer, mobile phone or tablet as a Progressive Web App (PWA)                                                                                                                                                                                                                                   |         5 |  ✅             |
-| You must upload your assignment in Moodle as a single .zip file.                                                                                                                                                                                                                                                         |           |   ✅            |
-| `class="ns_highlightedText"`                                                                                                                                                                                                                                                                                             |           | ✅              |
+## 📸 Screenshots
 
-## Responsive Design Requirements
+<details>
+<summary>🗺️ Overview — all three host cities</summary>
 
-The app must be responsive, so that it works well and differently across these device sizes:
+![Overview](images/screenshots/01-overview.png)
+</details>
 
-- Mobile phones (< 600px) in both **portrait** and **landscape** mode.
-- Tablets (between 600px and 768px) in both **portrait** and **landscape** mode.
-- Computers (> 768px).
+<details>
+<summary>🏟️ Stadium info — match schedule popup</summary>
 
-The responsive design marks are split across these requirements:
+![Stadium info](images/screenshots/02-stadium-info.png)
+</details>
 
-- Use a hamburger menu on mobile phones. Use a horizontal bar menu on tablets and computers. **(5%)**
-- Images and other content should scale well and display appropriately on each device. The user should not be expected
-  to scroll horizontally on the screen. Do not use any tables on mobile phones or tablets. **(5%)**
+<details>
+<summary>🔍 Place search with photo</summary>
+
+![Place search](images/screenshots/03-place-search.png)
+</details>
+
+<details>
+<summary>🏨 Hotels filter — custom markers across the city</summary>
+
+![Hotels filter](images/screenshots/04-hotels-filter.png)
+</details>
+
+<details>
+<summary>🍽️ Restaurant popup — photo, rating, budget in MXN / EUR / USD</summary>
+
+![Restaurant popup](images/screenshots/05-restaurant-popup.png)
+</details>
+
+<details>
+<summary>🗓️ Full route — 10 stops planned and drawn on the map</summary>
+
+![Full route](images/screenshots/06-full-route.png)
+</details>
+
+---
+
+## Features
+
+### 🗺️ Interactive Google Map
+- Displays all three Mexican World Cup host stadiums as custom markers
+- Click any stadium to focus the map on that city
+- Click anywhere on the map to add a location to your trip plan
+- Custom PNG markers for every category of place
+
+### 📍 Nearby Places (Google Places API)
+Filter and explore places around each stadium:
+- 🏨 Hotels
+- 🍽️ Restaurants
+- ☕ Cafes
+- 🏛️ Attractions
+- 🍺 Bars
+- 🅿️ Parking
+
+### ⭐ Rating Filter
+Filter nearby places by star rating (1–5) with toggle buttons.
+
+### 🗓️ One-Day Trip Planner
+- Build a custom route with up to 16 stops
+- Add places by clicking on the map or any marker
+- Delete any stop, including the Start point
+- Choose travel mode: **🚗 Car** or **🚶 Walking**
+- Live route drawn on the map via Google Directions API
+
+### 🌤️ Live Weather
+Real-time weather at the selected stadium — temperature, conditions, and wind speed — powered by the [Open-Meteo API](https://open-meteo.com/).
+
+### 💱 Currency Conversion
+Estimated budgets for hotels, restaurants, cafes, and bars shown in **MXN**, **EUR**, and **USD** with live exchange rates from the [Frankfurter API](https://frankfurter.dev/).
+
+### 🔍 Place Search
+Search for any place within the selected city or across all three host cities.
+
+### 📱 Fully Responsive
+- **Mobile phones** (< 600px): hamburger menu, stacked layout, no horizontal scrolling
+- **Tablets** (600–768px): adapted two-column layout
+- **Desktop** (> 768px): full horizontal navigation with side panels
+
+### ⬇️ Progressive Web App (PWA)
+Installable on desktop, phone, or tablet directly from the browser. Static assets are cached via a service worker for offline use.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Language | Vanilla JavaScript (ES Modules) |
+| Markup | HTML5 |
+| Styling | CSS3 — no frameworks |
+| Map | Google Maps JavaScript API |
+| Places | Google Places API (Nearby Search, Text Search, Place Details) |
+| Directions | Google Directions API |
+| Weather | [Open-Meteo API](https://open-meteo.com/) |
+| Currency | [Frankfurter API](https://frankfurter.dev/) |
+| Data | Local JSON file |
+| Offline | Web App Manifest + Service Worker |
+
+**No frameworks. No third-party UI libraries. No build step.** Pure HTML, CSS, and JavaScript.
+
+---
+
+## 📁 Project Structure
+
+```
+Google-Map-Website/
+├── index.html              # Main HTML page
+├── index.js                # App entry point — wires all modules together
+├── manifest.json           # PWA manifest
+├── sw.js                   # Service worker (cache-first offline strategy)
+├── icon.svg                # App logo
+├── css/
+│   └── style.css           # All styles — responsive breakpoints, layout, components
+├── js/
+│   ├── data/
+│   │   ├── locations.json  # Stadium data (city, coordinates, info content)
+│   │   └── locations.js    # JSON loader
+│   ├── map/
+│   │   └── MapManager.js   # Map, markers, directions, search, info windows
+│   ├── planner/
+│   │   └── DayPlanner.js   # Trip planner UI and route logic
+│   └── services/
+│       ├── WeatherService.js   # Open-Meteo API integration
+│       └── CurrencyService.js  # Frankfurter API + rate caching
+└── images/
+    ├── icons/              # PWA icons (192×192, 512×512)
+    └── markers/            # Custom map marker PNGs per category
+```
+
+---
+
+## ⚙️ Running Locally
+
+No build step required. Just serve the folder from any static web server.
+
+**VS Code Live Server:**
+1. Open the project folder in VS Code
+2. Right-click `index.html` → **Open with Live Server**
+
+**Node.js:**
+```bash
+npx serve .
+```
+
+> ⚠️ The Google Maps API key is included in `index.html`. For production, restrict the key in the [Google Cloud Console](https://console.cloud.google.com/).
+
+---
+
+## 🏗️ Architecture
+
+### ES Modules — no globals
+Every piece of logic lives in its own class. `index.js` imports and wires them together. No global variables, no inline scripts beyond bootstrapping.
+
+### MapManager
+Handles all map concerns: rendering stadium and category markers, deduplicating paginated Google Places results across multiple API pages, building info window content with photos and budgets, and calculating directions with a configurable travel mode (driving or walking).
+
+### DayPlanner
+Manages the trip builder UI independently from the map. Communicates with `MapManager` through a single `onRouteChanged` callback — the two modules never reference each other directly.
+
+### Services
+`WeatherService` and `CurrencyService` are thin wrappers around external REST APIs. `CurrencyService` caches exchange rates after the first fetch so every subsequent info window popup reuses the same response without extra network calls.
+
+### PWA / Service Worker
+Cache-first strategy: all static assets are pre-cached on install. Google Maps API requests bypass the cache and always go to the network so map data stays fresh.
+
+---
+
+## 🌐 APIs
+
+| API | Purpose | Key Required |
+|---|---|---|
+| Google Maps JavaScript API | Map rendering, markers, info windows | ✅ |
+| Google Places API | Nearby search, place details, photos | ✅ (same key) |
+| Google Directions API | Route + travel time calculation | ✅ (same key) |
+| Open-Meteo | Live weather at stadium locations | ❌ Free, no key |
+| Frankfurter | MXN → EUR / USD live exchange rates | ❌ Free, no key |
