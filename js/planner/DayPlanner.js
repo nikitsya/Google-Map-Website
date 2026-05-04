@@ -69,7 +69,15 @@ export class DayPlanner {
     }
 
     deleteSlot(index) {
-        if (index === 0 || index >= this.visibleSlots) return
+        if (index >= this.visibleSlots) return
+
+        // If deleting the start slot when it's the only one, just clear its content.
+        if (index === 0 && this.visibleSlots <= 1) {
+            this.resetSlot(this.routeSlots[0], 0)
+            this.renderRoute()
+            this.updateMapRoute()
+            return
+        }
 
         let shiftIndex = index
         while (shiftIndex < this.visibleSlots - 1) {
