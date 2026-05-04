@@ -305,6 +305,23 @@ p, li {
     font-size: 16px;
 }
 
+.ns_weatherPanel {
+    width: 520px;
+    box-sizing: border-box;
+    margin: 0 0 16px;
+    padding: 12px;
+    border-left: 4px solid #f4c542;
+    background: #d7e6f4;
+    color: #17364d;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.ns_weatherPanel strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
 /* Day route builder */
 .ns_routeScroll {
     width: 100%;
@@ -734,6 +751,10 @@ ul {
         padding: 14px;
     }
 
+    .ns_weatherPanel {
+        width: 312px;
+    }
+
     .ns_dayPanel h2 {
         font-size: 20px;
     }
@@ -864,5 +885,9 @@ ul {
         width: 60px;
         height: 50px;
         font-size: 11px;
+    }
+
+    .ns_weatherPanel {
+        width: 276px;
     }
 }

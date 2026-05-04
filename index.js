@@ -1,6 +1,7 @@
 import {loadStadiums} from "./js/data/locations.js"
 import {MapManager} from "./js/map/MapManager.js"
 import {DayPlanner} from "./js/planner/DayPlanner.js"
+import {WeatherService} from "./js/services/WeatherService.js"
 
 /**
  * Starts the page after the Google Maps script has loaded.
@@ -20,6 +21,7 @@ export async function initialiseMapPage() {
     const cityButtons = document.querySelectorAll(".ns_cityButton")
     const categoryButtons = document.querySelectorAll(".ns_categoryButton")
     const ratingButtons = document.querySelectorAll(".ns_ratingButton")
+    const weatherText = document.querySelector(".ns_weatherText")
     const routeBuilder = document.querySelector(".ns_routeBuilder")
     const routeSlots = document.querySelectorAll(".ns_routeSlot")
     const routeAddButton = document.querySelector(".ns_routeAddButton")
@@ -64,13 +66,27 @@ export async function initialiseMapPage() {
         searchButton.classList.remove("ns_inputError")
     }
 
+    const weatherService = new WeatherService()
     const dayPlanner = new DayPlanner(routeBuilder, routeSlots, routeAddButton)
+
+    const showWeatherForCity = async cityIndex => {
+        const stadium = stadiums[cityIndex]
+
+        weatherText.textContent = "Loading weather near the selected stadium..."
+
+        const weather = await weatherService.loadWeather(stadium.latitude, stadium.longitude)
+
+        weatherText.textContent = weather
+            ? `${stadium.city}: ${weather.temperature}°C, ${weather.description}, wind ${weather.windSpeed} km/h`
+            : "Weather is currently unavailable for this stadium."
+    }
 
     // Create the map controller.
     const mapManager = new MapManager(stadiums, cityIndex => {
         setActiveCityButton(cityIndex)
         resetCategoryButtons()
         resetRatingButtons()
+        showWeatherForCity(cityIndex)
     }, place => {
         return dayPlanner.addPlace(place)
     })
@@ -112,6 +128,7 @@ export async function initialiseMapPage() {
 
         mapManager.showAllCities()
         cityControls.classList.remove("ns_open")
+        weatherText.textContent = "Choose a city to see the current weather near its stadium."
     })
 
     menuButton.addEventListener("click", () => {
