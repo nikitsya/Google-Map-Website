@@ -11,6 +11,8 @@ export async function initialiseMapPage() {
 
     // Store the main page controls.
     const headerIcon = document.querySelector(".ns_headerIcon")
+    const menuButton = document.querySelector(".ns_menuButton")
+    const cityControls = document.querySelector(".ns_cityControls")
     const searchForm = document.querySelector(".ns_searchForm")
     const searchInput = document.querySelector(".ns_searchInput")
     const searchButton = document.querySelector(".ns_searchButton")
@@ -109,12 +111,19 @@ export async function initialiseMapPage() {
         })
 
         mapManager.showAllCities()
+        cityControls.classList.remove("ns_open")
+    })
+
+    menuButton.addEventListener("click", () => {
+        // Open and close the mobile city menu.
+        cityControls.classList.toggle("ns_open")
     })
 
     cityButtons.forEach(button => {
         button.addEventListener("click", () => {
             const cityIndex = Number(button.value)
             mapManager.focusOnCity(cityIndex)
+            cityControls.classList.remove("ns_open")
         })
     })
 

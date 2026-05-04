@@ -68,17 +68,39 @@ section {
     font-size: 15px;
 }
 
+/* Mobile menu button */
+.ns_menuButton {
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 10px;
+    background: #ba1f33;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.ns_menuButton span {
+    width: 22px;
+    height: 3px;
+    border-radius: 3px;
+    background: #ffffff;
+}
+
 /* Place search */
 .ns_searchForm {
-    width: 390px;
-    margin-left: auto;
+    width: 882px;
+    margin-bottom: 18px;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
 }
 
 .ns_searchInput {
-    width: 326px;
+    width: 828px;
     height: 42px;
     border: 0;
     border-radius: 10px 0 0 10px;
@@ -120,11 +142,11 @@ section {
 
 /* City navigation */
 .ns_cityControls {
-    width: 882px;
-    margin-bottom: 18px;
+    width: 432px;
+    margin-left: auto;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: flex-end;
     gap: 12px;
 }
 
@@ -421,12 +443,20 @@ ul {
         width: 430px;
     }
 
+    .ns_cityControls {
+        width: 396px;
+    }
+
+    .ns_cityButton {
+        width: 120px;
+    }
+
     .ns_searchForm {
-        width: 300px;
+        width: 704px;
     }
 
     .ns_searchInput {
-        width: 246px;
+        width: 650px;
     }
 
     .ns_mapSection {
@@ -471,15 +501,16 @@ ul {
 
     .ns_cityControls {
         width: 700px;
+        margin-left: 0;
+        justify-content: flex-start;
     }
 
     .ns_searchForm {
-        width: 700px;
-        margin-left: 0;
+        width: 704px;
     }
 
     .ns_searchInput {
-        width: 646px;
+        width: 650px;
     }
 
     #ns_map {
@@ -521,7 +552,12 @@ ul {
     }
 
     .ns_headerText {
-        width: 286px;
+        width: 220px;
+    }
+
+    .ns_menuButton {
+        display: flex;
+        margin-left: auto;
     }
 
     .ns_searchForm {
@@ -542,14 +578,21 @@ ul {
 
     .ns_cityControls {
         width: 340px;
+        margin-left: 0;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
         gap: 8px;
-        margin-bottom: 14px;
     }
 
     .ns_cityButton {
-        width: 108px;
+        width: 340px;
         padding: 10px 6px;
         font-size: 13px;
+    }
+
+    .ns_cityControls.ns_open {
+        display: flex;
     }
 
     .ns_categoryButton {
@@ -654,7 +697,7 @@ ul {
     }
 
     .ns_headerText {
-        width: 246px;
+        width: 194px;
     }
 
     .ns_searchForm {
@@ -670,7 +713,7 @@ ul {
     }
 
     .ns_cityButton {
-        width: 94px;
+        width: 300px;
         font-size: 12px;
     }
 
