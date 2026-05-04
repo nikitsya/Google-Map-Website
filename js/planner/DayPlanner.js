@@ -12,12 +12,14 @@ const ROUTE_LINE_SIZE = 4
  */
 export class DayPlanner {
 
-    constructor(routeBuilder, routeSlots, routeAddButton) {
+    constructor(routeBuilder, routeSlots, routeAddButton, onRouteChanged = () => {}) {
         this.routeBuilder = routeBuilder
         this.routeSlots = routeSlots
         this.routeAddButton = routeAddButton
+        this.onRouteChanged = onRouteChanged
         this.visibleSlots = 1
         this.activeSlot = null
+        this.routePlaces = Array.from(routeSlots).map(() => null)
     }
 
     init() {
@@ -57,9 +59,11 @@ export class DayPlanner {
         if (!this.activeSlot) return false
 
         this.setSlotLabel(this.activeSlot, place.name)
+        this.routePlaces[Array.from(this.routeSlots).indexOf(this.activeSlot)] = place
         this.activeSlot.classList.add("ns_filled")
         this.activeSlot.classList.remove("ns_active")
         this.activeSlot = null
+        this.updateMapRoute()
 
         return true
     }
@@ -74,18 +78,19 @@ export class DayPlanner {
 
             if (sourceSlot.classList.contains("ns_filled")) {
                 this.setSlotLabel(targetSlot, sourceSlot.querySelector(".ns_routeSlotLabel").textContent)
+                this.routePlaces[shiftIndex] = this.routePlaces[shiftIndex + 1]
                 targetSlot.classList.add("ns_filled")
             } else {
                 this.resetSlot(targetSlot, shiftIndex)
             }
 
-            targetSlot.classList.remove("ns_active")
             shiftIndex += 1
         }
 
         this.resetSlot(this.routeSlots[this.visibleSlots - 1], this.visibleSlots - 1)
         this.visibleSlots -= 1
         this.renderRoute()
+        this.updateMapRoute()
     }
 
     showNextSlot() {
@@ -174,6 +179,11 @@ export class DayPlanner {
     resetSlot(slot, index) {
         const slotLabel = index === 0 ? "Start" : `Place ${index}`
         this.setSlotLabel(slot, slotLabel)
+        this.routePlaces[index] = null
         slot.classList.remove("ns_active", "ns_filled")
+    }
+
+    updateMapRoute() {
+        this.onRouteChanged(this.routePlaces.filter(place => place))
     }
 }

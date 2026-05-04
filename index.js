@@ -67,7 +67,10 @@ export async function initialiseMapPage() {
     }
 
     const weatherService = new WeatherService()
-    const dayPlanner = new DayPlanner(routeBuilder, routeSlots, routeAddButton)
+    let mapManager = null
+    const dayPlanner = new DayPlanner(routeBuilder, routeSlots, routeAddButton, places => {
+        if (mapManager) mapManager.showRoute(places)
+    })
 
     const showWeatherForCity = async cityIndex => {
         const stadium = stadiums[cityIndex]
@@ -82,7 +85,7 @@ export async function initialiseMapPage() {
     }
 
     // Create the map controller.
-    const mapManager = new MapManager(stadiums, cityIndex => {
+    mapManager = new MapManager(stadiums, cityIndex => {
         setActiveCityButton(cityIndex)
         resetCategoryButtons()
         resetRatingButtons()

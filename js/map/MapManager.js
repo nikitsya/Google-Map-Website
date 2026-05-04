@@ -48,6 +48,8 @@ export class MapManager {
         this.map = null
         this.placesService = null
         this.infoWindow = null
+        this.directionsService = null
+        this.directionsRenderer = null
         this.bounds = null
 
         // Keep every marker so it can be shown, hidden, or reused later.
@@ -85,6 +87,12 @@ export class MapManager {
         })
         this.placesService = new google.maps.places.PlacesService(this.map)
         this.infoWindow = new google.maps.InfoWindow()
+        this.directionsService = new google.maps.DirectionsService()
+        this.directionsRenderer = new google.maps.DirectionsRenderer({
+            map: this.map,
+            preserveViewport: false,
+            suppressMarkers: false
+        })
         this.bounds = new google.maps.LatLngBounds()
 
         this.renderStadiumMarkers()
@@ -551,9 +559,46 @@ export class MapManager {
     // --- Place information ---
 
     addPlaceToTripPlan(place) {
+        let placeLocation = null
+        if (place.geometry && place.geometry.location) placeLocation = place.geometry.location
+        if (place.latitude && place.longitude) placeLocation = new google.maps.LatLng(place.latitude, place.longitude)
+
         this.onPlaceSelected({
+            location: placeLocation,
             name: place.name
         })
+    }
+
+    showRoute(places) {
+        if (!this.directionsService || !this.directionsRenderer) return
+
+        const routePlaces = places.filter(place => place.location)
+
+        if (routePlaces.length < 2) {
+            this.clearRoute()
+            return
+        }
+
+        const waypoints = routePlaces.slice(1, -1).map(place => {
+            return {
+                location: place.location,
+                stopover: true
+            }
+        })
+
+        this.directionsService.route({
+            destination: routePlaces[routePlaces.length - 1].location,
+            origin: routePlaces[0].location,
+            travelMode: google.maps.TravelMode.DRIVING,
+            waypoints: waypoints
+        }, (route) => {
+            this.directionsRenderer.setMap(this.map)
+            this.directionsRenderer.setDirections(route)
+        })
+    }
+
+    clearRoute() {
+        if (this.directionsRenderer) this.directionsRenderer.setMap(null)
     }
 
     async buildPlaceContent(place, fallbackText) {
