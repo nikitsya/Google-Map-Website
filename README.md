@@ -7,37 +7,37 @@ An interactive travel guide web app built for tourists visiting Mexico during th
 ## 📸 Screenshots
 
 <details>
-<summary>🗺️ Overview — all three host cities</summary>
+<summary>Overview — all three host cities</summary>
 
 ![Overview](images/screenshots/01-overview.png)
 </details>
 
 <details>
-<summary>🏟️ Stadium info — match schedule popup</summary>
+<summary>Stadium info — match schedule popup</summary>
 
 ![Stadium info](images/screenshots/02-stadium-info.png)
 </details>
 
 <details>
-<summary>🔍 Place search with photo</summary>
+<summary>Place search with photo</summary>
 
 ![Place search](images/screenshots/03-place-search.png)
 </details>
 
 <details>
-<summary>🏨 Hotels filter — custom markers across the city</summary>
+<summary>Hotels filter — custom markers across the city</summary>
 
 ![Hotels filter](images/screenshots/04-hotels-filter.png)
 </details>
 
 <details>
-<summary>🍽️ Restaurant popup — photo, rating, budget in MXN / EUR / USD</summary>
+<summary>Restaurant popup — photo, rating, budget in MXN / EUR / USD</summary>
 
 ![Restaurant popup](images/screenshots/05-restaurant-popup.png)
 </details>
 
 <details>
-<summary>🗓️ Full route — 10 stops planned and drawn on the map</summary>
+<summary>Full route — 10 stops planned and drawn on the map</summary>
 
 ![Full route](images/screenshots/06-full-route.png)
 </details>
@@ -54,12 +54,12 @@ An interactive travel guide web app built for tourists visiting Mexico during th
 
 ### 📍 Nearby Places (Google Places API)
 Filter and explore places around each stadium:
-- 🏨 Hotels
-- 🍽️ Restaurants
-- ☕ Cafes
-- 🏛️ Attractions
-- 🍺 Bars
-- 🅿️ Parking
+- Hotels
+- Restaurants
+- Cafes
+- Attractions
+- Bars
+- Parking
 
 ### ⭐ Rating Filter
 Filter nearby places by star rating (1–5) with toggle buttons.
