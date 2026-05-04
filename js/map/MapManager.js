@@ -1,7 +1,23 @@
+import {CurrencyService} from "../services/CurrencyService.js"
+
 const MARKER_SIZE = 42
 const SEARCH_RADIUS = 10000
 const VISIBLE_ZOOM = 11
 const PLACE_RATINGS = [5, 4, 3, 2, 1]
+const PRICE_BUDGETS = {
+    hotel: {
+        1: {min: 600, max: 1200}, 2: {min: 1200, max: 2200}, 3: {min: 2200, max: 4000}, 4: {min: 4000, max: 7000}
+    },
+    cafe: {
+        1: {min: 70, max: 140}, 2: {min: 140, max: 260}, 3: {min: 260, max: 420}, 4: {min: 420, max: 700}
+    },
+    restaurant: {
+        1: {min: 180, max: 320}, 2: {min: 320, max: 650}, 3: {min: 650, max: 1200}, 4: {min: 1200, max: 2200}
+    },
+    bar: {
+        1: {min: 120, max: 260}, 2: {min: 260, max: 520}, 3: {min: 520, max: 900}, 4: {min: 900, max: 1600}
+    }
+}
 
 // Custom marker images used instead of the default Google Maps pins.
 const STADIUM_MARKER_ICON = "images/markers/stadium.png"
@@ -21,6 +37,7 @@ export class MapManager {
         this.stadiums = stadiums
         this.onStadiumSelected = onStadiumSelected
         this.onPlaceSelected = onPlaceSelected
+        this.currencyService = new CurrencyService()
 
         // Track what the user has selected in the page controls.
         this.activeStadiumIndex = null
@@ -90,13 +107,13 @@ export class MapManager {
 
         mapEvent.stop()
         this.placesService.getDetails({
-            fields: ["name", "geometry", "formatted_address", "vicinity", "rating", "photos"],
+            fields: ["name", "geometry", "formatted_address", "vicinity", "rating", "photos", "price_level", "types"],
             placeId: mapEvent.placeId
-        }, (place) => {
+        }, async place => {
             if (!place) return
 
             this.addPlaceToTripPlan(place)
-            this.infoWindow.setContent(this.buildPlaceContent(place, "Selected place on the map"))
+            this.infoWindow.setContent(await this.buildPlaceContent(place, "Selected place on the map"))
             this.infoWindow.setPosition(place.geometry ? place.geometry.location : mapEvent.latLng)
             this.infoWindow.open({
                 map: this.map
@@ -262,11 +279,11 @@ export class MapManager {
             stadiumIndex: stadiumIndex
         })
 
-        marker.addListener("click", () => {
+        marker.addListener("click", async () => {
             this.addPlaceToTripPlan(hotel)
 
             // Reuse one info window instead of opening many at the same time.
-            this.infoWindow.setContent(this.buildPlaceContent(hotel, "Hotel near the stadium"))
+            this.infoWindow.setContent(await this.buildPlaceContent(hotel, "Hotel near the stadium"))
             this.infoWindow.open({
                 anchor: marker,
                 map: this.map
@@ -326,11 +343,11 @@ export class MapManager {
             stadiumIndex: stadiumIndex
         })
 
-        marker.addListener("click", () => {
+        marker.addListener("click", async () => {
             this.addPlaceToTripPlan(cafe)
 
             // Reuse one info window instead of opening many at the same time.
-            this.infoWindow.setContent(this.buildPlaceContent(cafe, "Cafe near the stadium"))
+            this.infoWindow.setContent(await this.buildPlaceContent(cafe, "Cafe near the stadium"))
             this.infoWindow.open({
                 anchor: marker,
                 map: this.map
@@ -395,11 +412,11 @@ export class MapManager {
             stadiumIndex: stadiumIndex
         })
 
-        marker.addListener("click", () => {
+        marker.addListener("click", async () => {
             this.addPlaceToTripPlan(restaurant)
 
             // Reuse one info window instead of opening many at the same time.
-            this.infoWindow.setContent(this.buildPlaceContent(restaurant, "Restaurant near the stadium"))
+            this.infoWindow.setContent(await this.buildPlaceContent(restaurant, "Restaurant near the stadium"))
             this.infoWindow.open({
                 anchor: marker,
                 map: this.map
@@ -456,11 +473,11 @@ export class MapManager {
             stadiumIndex: stadiumIndex
         })
 
-        marker.addListener("click", () => {
+        marker.addListener("click", async () => {
             this.addPlaceToTripPlan(attraction)
 
             // Reuse one info window instead of opening many at the same time.
-            this.infoWindow.setContent(this.buildPlaceContent(attraction, "Attraction near the stadium"))
+            this.infoWindow.setContent(await this.buildPlaceContent(attraction, "Attraction near the stadium"))
             this.infoWindow.open({
                 anchor: marker,
                 map: this.map
@@ -518,11 +535,11 @@ export class MapManager {
             stadiumIndex: stadiumIndex
         })
 
-        marker.addListener("click", () => {
+        marker.addListener("click", async () => {
             this.addPlaceToTripPlan(bar)
 
             // Reuse one info window instead of opening many at the same time.
-            this.infoWindow.setContent(this.buildPlaceContent(bar, "Bar near the stadium"))
+            this.infoWindow.setContent(await this.buildPlaceContent(bar, "Bar near the stadium"))
             this.infoWindow.open({
                 anchor: marker,
                 map: this.map
@@ -539,7 +556,7 @@ export class MapManager {
         })
     }
 
-    buildPlaceContent(place, fallbackText) {
+    async buildPlaceContent(place, fallbackText) {
         // Add the first Google Places photo when one is available.
         const photoUrl = place.photos && place.photos.length > 0
             ? place.photos[0].getUrl({maxWidth: 260, maxHeight: 160})
@@ -547,6 +564,7 @@ export class MapManager {
         const ratingText = place.rating
             ? `<div class="ns_placeRating">Rating: ${place.rating} / 5</div>`
             : ""
+        const priceText = await this.buildPlacePriceContent(place)
 
         // Build the small popup shown when a nearby place marker is clicked.
         return `
@@ -554,9 +572,52 @@ export class MapManager {
                 ${photoUrl ? `<img alt="${place.name}" class="ns_placePhoto" src="${photoUrl}">` : ""}
                 <strong>${place.name}</strong>
                 ${ratingText}
+                ${priceText}
                 <div>${place.vicinity || fallbackText}</div>
             </div>
         `
+    }
+
+    async buildPlacePriceContent(place) {
+        const budget = this.getPlaceBudget(place)
+
+        if (!budget) return ""
+
+        const convertedBudget = await this.currencyService.convertBudget(budget.min, budget.max)
+        const conversionText = convertedBudget
+            ? `
+                <div>EUR ${convertedBudget.eur.min}-${convertedBudget.eur.max}</div>
+                <div>USD ${convertedBudget.usd.min}-${convertedBudget.usd.max}</div>
+            `
+            : `<div>Currency conversion is currently unavailable.</div>`
+
+        return `
+            <div class="ns_placeBudget">
+                <strong>Estimated budget</strong>
+                <div>MXN ${budget.min}-${budget.max}</div>
+                ${conversionText}
+            </div>
+        `
+    }
+
+    getPlaceBudget(place) {
+        if (!place.price_level) return null
+
+        const category = this.getPriceCategory(place)
+        if (!category) return null
+
+        return PRICE_BUDGETS[category][place.price_level] || null
+    }
+
+    getPriceCategory(place) {
+        const types = place.types || []
+
+        if (types.includes("lodging")) return "hotel"
+        if (types.includes("cafe")) return "cafe"
+        if (types.includes("restaurant")) return "restaurant"
+        if (types.includes("bar")) return "bar"
+
+        return null
     }
 
     getPlaceRating(place) {
@@ -613,7 +674,7 @@ export class MapManager {
             }
         }
 
-        this.placesService.textSearch(request, places => {
+        this.placesService.textSearch(request, async places => {
             if (!places || !places[0]) {
                 showSearchError("No matching place was found in the Mexican host cities.")
                 return
@@ -628,7 +689,7 @@ export class MapManager {
 
             this.map.setCenter(place.geometry.location)
             this.map.setZoom(VISIBLE_ZOOM)
-            this.infoWindow.setContent(this.buildPlaceContent(place, "Searched place on the map"))
+            this.infoWindow.setContent(await this.buildPlaceContent(place, "Searched place on the map"))
             this.infoWindow.setPosition(place.geometry.location)
             this.infoWindow.open({
                 map: this.map

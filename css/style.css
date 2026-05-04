@@ -396,6 +396,20 @@ p, li {
     font-weight: 700;
 }
 
+.ns_placeBudget {
+    margin: 8px 0;
+    padding: 8px;
+    border-left: 4px solid #f4c542;
+    background: #f7fafc;
+    color: #17364d;
+    line-height: 1.35;
+}
+
+.ns_placeBudget strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
 .ns_stadiumInfo {
     width: 320px;
     font-size: 14px;
