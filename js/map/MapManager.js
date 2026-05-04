@@ -111,7 +111,7 @@ export class MapManager {
             const marker = new google.maps.Marker({
                 icon: {
                     url: STADIUM_MARKER_ICON,
-                    scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)
+                    scaledSize: new google.maps.Size(MARKER_SIZE + 20, MARKER_SIZE + 20)
                 },
                 map: this.map,
                 position: position,
