@@ -44,6 +44,9 @@ export class MapManager {
         this.activePlaceCategory = null
         this.activeRatings = new Set(PLACE_RATINGS)
 
+        // Travel mode for route directions (DRIVING or WALKING).
+        this.travelMode = google.maps.TravelMode.DRIVING
+
         // These Google Maps objects are created when the map is initialised.
         this.map = null
         this.placesService = null
@@ -589,7 +592,7 @@ export class MapManager {
         this.directionsService.route({
             destination: routePlaces[routePlaces.length - 1].location,
             origin: routePlaces[0].location,
-            travelMode: google.maps.TravelMode.DRIVING,
+            travelMode: this.travelMode,
             waypoints: waypoints
         }, (route) => {
             this.directionsRenderer.setMap(this.map)
@@ -599,6 +602,11 @@ export class MapManager {
 
     clearRoute() {
         if (this.directionsRenderer) this.directionsRenderer.setMap(null)
+    }
+
+    setTravelMode(mode) {
+        // Accept "DRIVING" or "WALKING" and rebuild the current route with the new mode.
+        this.travelMode = google.maps.TravelMode[mode] || google.maps.TravelMode.DRIVING
     }
 
     async buildPlaceContent(place, fallbackText) {

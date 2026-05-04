@@ -322,6 +322,41 @@ p, li {
     margin-bottom: 4px;
 }
 
+/* Travel mode toggle */
+.ns_travelMode {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.ns_travelButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 2px solid #ffffff;
+    border-radius: 20px;
+    background: transparent;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.ns_travelButton:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.ns_travelButton.ns_active {
+    background: #f4c542;
+    border-color: #f4c542;
+    color: #17364d;
+    font-weight: bold;
+}
+
 /* Day route builder */
 .ns_routeScroll {
     width: 100%;

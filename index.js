@@ -22,6 +22,7 @@ export async function initialiseMapPage() {
     const categoryButtons = document.querySelectorAll(".ns_categoryButton")
     const ratingButtons = document.querySelectorAll(".ns_ratingButton")
     const weatherText = document.querySelector(".ns_weatherText")
+    const travelButtons = document.querySelectorAll(".ns_travelButton")
     const routeBuilder = document.querySelector(".ns_routeBuilder")
     const routeSlots = document.querySelectorAll(".ns_routeSlot")
     const routeAddButton = document.querySelector(".ns_routeAddButton")
@@ -161,6 +162,16 @@ export async function initialiseMapPage() {
         button.addEventListener("click", () => {
             button.classList.toggle("ns_active")
             mapManager.setActiveRatings(getSelectedRatings())
+        })
+    })
+
+    travelButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            travelButtons.forEach(b => b.classList.remove("ns_active"))
+            button.classList.add("ns_active")
+            mapManager.setTravelMode(button.value)
+            // Rebuild the current route with the newly selected travel mode.
+            dayPlanner.updateMapRoute()
         })
     })
 }
