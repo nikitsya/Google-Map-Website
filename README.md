@@ -142,16 +142,22 @@ Google-Map-Website/
 
 No build step required. Just serve the folder from any static web server.
 
-**VS Code Live Server:**
-1. Open the project folder in VS Code
-2. Right-click `index.html` → **Open with Live Server**
+**1. Set up your API key:**
+```bash
+cp config.example.js config.js
+# Open config.js and paste your Google Maps API key
+```
 
-**Node.js:**
+**2. Start a local server:**
+
+VS Code Live Server — right-click `index.html` → **Open with Live Server**
+
+Or with Node.js:
 ```bash
 npx serve .
 ```
 
-> ⚠️ The Google Maps API key is included in `index.html`. For production, restrict the key in the [Google Cloud Console](https://console.cloud.google.com/).
+> `config.js` is listed in `.gitignore` and is never committed to git. Only `config.example.js` is tracked.
 
 ---
 
