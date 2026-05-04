@@ -33,7 +33,8 @@ const PARKING_MARKER_ICON = "images/markers/parking.png"
  */
 export class MapManager {
 
-    constructor(stadiums, onStadiumSelected = () => {}, onPlaceSelected = () => false) {
+    constructor(stadiums, onStadiumSelected = () => {
+    }, onPlaceSelected = () => false) {
         // Store all stadium data used by the map.
         this.stadiums = stadiums
         this.onStadiumSelected = onStadiumSelected
@@ -780,7 +781,8 @@ export class MapManager {
         this.updateNearbyMarkers()
     }
 
-    searchPlace(query, showSearchError = () => {}) {
+    searchPlace(query, showSearchError = () => {
+    }) {
         const searchQuery = query.trim()
 
         if (!searchQuery || !this.placesService) {

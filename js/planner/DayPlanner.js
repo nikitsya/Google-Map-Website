@@ -12,7 +12,8 @@ const ROUTE_LINE_SIZE = 4
  */
 export class DayPlanner {
 
-    constructor(routeBuilder, routeSlots, routeAddButton, onRouteChanged = () => {}) {
+    constructor(routeBuilder, routeSlots, routeAddButton, onRouteChanged = () => {
+    }) {
         this.routeBuilder = routeBuilder
         this.routeSlots = routeSlots
         this.routeAddButton = routeAddButton
