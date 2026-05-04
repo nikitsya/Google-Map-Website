@@ -569,7 +569,7 @@ export class MapManager {
         // Build the small popup shown when a nearby place marker is clicked.
         return `
             <div class="ns_placeInfo">
-                ${photoUrl ? `<img alt="${place.name}" class="ns_placePhoto" src="${photoUrl}">` : ""}
+                ${photoUrl ? `<img alt="${place.name}" class="ns_placePhoto" onerror="this.remove()" src="${photoUrl}">` : ""}
                 <strong>${place.name}</strong>
                 ${ratingText}
                 ${priceText}
