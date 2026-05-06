@@ -6,7 +6,7 @@ one-day trip planning, live weather, currency conversion, and more.
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 <details>
 <summary>Overview — all three host cities</summary>
@@ -105,7 +105,7 @@ offline use.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer      | Technology                                                    |
 |------------|---------------------------------------------------------------|
@@ -124,7 +124,7 @@ offline use.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Google-Map-Website/
@@ -153,7 +153,7 @@ Google-Map-Website/
 
 ---
 
-## ⚙️ Running Locally
+## Running Locally
 
 No build step required. Just serve the folder from any static web server.
 
@@ -178,7 +178,7 @@ npx serve .
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### ES Modules — no globals
 
@@ -208,7 +208,7 @@ go to the network so map data stays fresh.
 
 ---
 
-## 🌐 APIs
+## APIs
 
 | API                        | Purpose                              | Key Required   |
 |----------------------------|--------------------------------------|----------------|
